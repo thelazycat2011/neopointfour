@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2009-2010 Ricardo Quesada
 Copyright (c) 2011      Zynga Inc.
 
@@ -53,12 +53,12 @@ If the layer contains a property named "cc_vertexz" with an integer (in can be p
 then all the tiles belonging to the layer will use that value as their OpenGL vertex Z for depth.
 
 On the other hand, if the "cc_vertexz" property has the "automatic" value, then the tiles will use an automatic vertex Z value.
-Also before drawing the tiles, GL_ALPHA_TEST will be enabled, and disabled after drawing them. The used alpha func will be:
+Also before drawing the tiles, GL_ALPHA_TEST will be enabled, and disabled after drawin them. The used alpha func will be:
 
 glAlphaFunc( GL_GREATER, value )
 
 "value" by default is 0, but you can change it from Tiled by adding the "cc_alpha_func" property to the layer.
-The value 0 should work for most cases, but if you have tiles that are semi-transparent, then you might want to use a different
+The value 0 should work for most cases, but if you have tiles that are semi-transparent, then you might want to use a differnt
 value, like 0.5.
 
 For further information, please see the programming guide:
@@ -75,34 +75,28 @@ class CC_DLL CCTMXLayer : public CCSpriteBatchNode
 {
     /** size of the layer in tiles */
     CC_SYNTHESIZE_PASS_BY_REF(CCSize, m_tLayerSize, LayerSize);
-    /** size of the map's tile (could be different from the tile's size) */
+    /** size of the map's tile (could be differnt from the tile's size) */
     CC_SYNTHESIZE_PASS_BY_REF(CCSize, m_tMapTileSize, MapTileSize);
     /** pointer to the map of tiles */
     CC_SYNTHESIZE(unsigned int*, m_pTiles, Tiles);
-    /** Tileset information for the layer */
+    /** Tilset information for the layer */
     CC_PROPERTY(CCTMXTilesetInfo*, m_pTileSet, TileSet);
     /** Layer orientation, which is the same as the map orientation */
     CC_SYNTHESIZE(unsigned int, m_uLayerOrientation, LayerOrientation);
     /** properties from the layer. They can be added using Tiled */
     CC_PROPERTY(CCDictionary*, m_pProperties, Properties);
 public:
-    /**
-     * @js ctor
-     * @lua NA
-     */
     CCTMXLayer();
-    /**
-     * @js NA
-     * @lua NA
-     */
     virtual ~CCTMXLayer();
+    /** creates a CCTMXLayer with an tileset info, a layer info and a map info 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCTMXLayer * layerWithTilesetInfo(CCTMXTilesetInfo *tilesetInfo, CCTMXLayerInfo *layerInfo, CCTMXMapInfo *mapInfo);
   
     /** creates a CCTMXLayer with an tileset info, a layer info and a map info */
     static CCTMXLayer * create(CCTMXTilesetInfo *tilesetInfo, CCTMXLayerInfo *layerInfo, CCTMXMapInfo *mapInfo);
 
-    /** initializes a CCTMXLayer with a tileset info, a layer info and a map info 
-     * @lua NA
-     */
+    /** initializes a CCTMXLayer with a tileset info, a layer info and a map info */
     bool initWithTilesetInfo(CCTMXTilesetInfo *tilesetInfo, CCTMXLayerInfo *layerInfo, CCTMXMapInfo *mapInfo);
 
     /** dealloc the map that contains the tile position from memory.
@@ -117,21 +111,17 @@ public:
     You can remove either by calling:
     - layer->removeChild(sprite, cleanup);
     - or layer->removeTileAt(ccp(x,y));
-    @js getTileGIDAt
     */
     CCSprite* tileAt(const CCPoint& tileCoordinate);
 
     /** returns the tile gid at a given tile coordinate.
     if it returns 0, it means that the tile is empty.
     This method requires the the tile map has not been previously released (eg. don't call layer->releaseMap())
-    @js tileGIDAt
     */
     unsigned int  tileGIDAt(const CCPoint& tileCoordinate);
 
     /** returns the tile gid at a given tile coordinate. It also returns the tile flags.
      This method requires the the tile map has not been previously released (eg. don't call [layer releaseMap])
-     @js tileGIDAt
-     @lua NA
      */
     unsigned int tileGIDAt(const CCPoint& tileCoordinate, ccTMXTileFlags* flags);
 
@@ -153,27 +143,20 @@ public:
     /** removes a tile at given tile coordinate */
     void removeTileAt(const CCPoint& tileCoordinate);
 
-    /** returns the position in points of a given tile coordinate 
-     * @js getPositionAt
-     */
+    /** returns the position in points of a given tile coordinate */
     CCPoint positionAt(const CCPoint& tileCoordinate);
 
-    /** return the value for the specific property name 
-     *  @js getProperty
-     */
+    /** return the value for the specific property name */
     CCString *propertyNamed(const char *propertyName);
 
     /** Creates the tiles */
     void setupTiles();
 
     /** CCTMXLayer doesn't support adding a CCSprite manually.
-     *  @warning addchild(z, tag); is not supported on CCTMXLayer. Instead of setTileGID.
-     *  @lua NA
-     */
+    @warning addchild(z, tag); is not supported on CCTMXLayer. Instead of setTileGID.
+    */
     virtual void addChild(CCNode * child, int zOrder, int tag);
-    /** super method
-     *  @lua NA
-     */
+    // super method
     void removeChild(CCNode* child, bool cleanup);
 
     inline const char* getLayerName(){ return m_sLayerName.c_str(); }
@@ -185,7 +168,7 @@ private:
 
     CCPoint calculateLayerOffset(const CCPoint& offset);
 
-    /* optimization methods */
+    /* optimization methos */
     CCSprite* appendTileForGID(unsigned int gid, const CCPoint& pos);
     CCSprite* insertTileForGID(unsigned int gid, const CCPoint& pos);
     CCSprite* updateTileForGID(unsigned int gid, const CCPoint& pos);
@@ -217,7 +200,7 @@ protected:
     ccCArray            *m_pAtlasIndexArray;
     
     // used for retina display
-    float               m_fContentScaleFactor;            
+    float               m_fContentScaleFactor;
 };
 
 // end of tilemap_parallax_nodes group

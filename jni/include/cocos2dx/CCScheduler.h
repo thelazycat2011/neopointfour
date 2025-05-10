@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2008-2010 Ricardo Quesada
 Copyright (c) 2011      Zynga Inc.
 
@@ -47,71 +47,52 @@ class CCSet;
 //
 // CCTimer
 //
-/** @brief Light-weight timer */
-//
+/** @brief Light weight timer */
 class CC_DLL CCTimer : public CCObject
 {
 public:
-    /**
-     *  @js  ctor
-     *  @lua NA
-     */
     CCTimer(void);
-    
+
     /** get interval in seconds */
-    float getInterval(void) const;
+    inline float getInterval(void) { return m_fInterval; }
     /** set interval in seconds */
-    void setInterval(float fInterval);
-    /**
-     *  @lua NA
-     */
-    SEL_SCHEDULE getSelector() const;
-    
-    /** Initializes a timer with a target and a selector. 
-     *  @lua NA
-     */
+    inline void setInterval(float fInterval){ m_fInterval = fInterval; }
+
+    /** Initializes a timer with a target and a selector. */
     bool initWithTarget(CCObject *pTarget, SEL_SCHEDULE pfnSelector);
-    
-    /** Initializes a timer with a target, a selector and an interval in seconds, repeat in number of times to repeat, delay in seconds. 
-     *  @lua NA
-     */
+
+    /** Initializes a timer with a target, a selector and an interval in seconds, repeat in number of times to repeat, delay in seconds. */
     bool initWithTarget(CCObject *pTarget, SEL_SCHEDULE pfnSelector, float fSeconds, unsigned int nRepeat, float fDelay);
-    
+
     /** Initializes a timer with a script callback function and an interval in seconds. */
     bool initWithScriptHandler(int nHandler, float fSeconds);
-    
+
     /** triggers the timer */
     void update(float dt);
-    
+
 public:
-    /** Allocates a timer with a target and a selector. 
-     *  @lua NA
-     */
+    /** Allocates a timer with a target and a selector. */
     static CCTimer* timerWithTarget(CCObject *pTarget, SEL_SCHEDULE pfnSelector);
-    
-    /** Allocates a timer with a target, a selector and an interval in seconds. 
-     *  @lua NA
-     */
+
+    /** Allocates a timer with a target, a selector and an interval in seconds. */
     static CCTimer* timerWithTarget(CCObject *pTarget, SEL_SCHEDULE pfnSelector, float fSeconds);
-    
+
     /** Allocates a timer with a script callback function and an interval in seconds. */
     static CCTimer* timerWithScriptHandler(int nHandler, float fSeconds);
-    /**
-     *  @lua NA
-     */
-    inline int getScriptHandler() { return m_nScriptHandler; };
+
+public:
+    SEL_SCHEDULE m_pfnSelector;
+    float m_fInterval;
 
 protected:
     CCObject *m_pTarget;
     float m_fElapsed;
     bool m_bRunForever;
     bool m_bUseDelay;
-    unsigned int m_uTimesExecuted;
-    unsigned int m_uRepeat; //0 = once, 1 is 2 x executed
+    unsigned int m_nTimesExecuted;
+    unsigned int m_nRepeat; //0 = once, 1 is 2 x executed
     float m_fDelay;
-    float m_fInterval;
-    SEL_SCHEDULE m_pfnSelector;
-    
+
     int m_nScriptHandler;
 };
 
@@ -124,7 +105,7 @@ struct _hashUpdateEntry;
 
 class CCArray;
 
-/** @brief Scheduler is responsible for triggering the scheduled callbacks.
+/** @brief Scheduler is responsible of triggering the scheduled callbacks.
 You should not use NSTimer. Instead use this class.
 
 There are 2 different types of callbacks (selectors):
@@ -139,10 +120,6 @@ class CC_DLL CCScheduler : public CCObject
 {
 public:
     CCScheduler();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     ~CCScheduler(void);
 
     inline float getTimeScale(void) { return m_fTimeScale; }
@@ -156,94 +133,74 @@ public:
     inline void setTimeScale(float fTimeScale) { m_fTimeScale = fTimeScale; }
 
     /** 'update' the scheduler.
-     *  You should NEVER call this method, unless you know what you are doing.
-     *  @js NA
-     *  @lua NA
+     You should NEVER call this method, unless you know what you are doing.
      */
     void update(float dt);
 
     /** The scheduled method will be called every 'interval' seconds.
      If paused is YES, then it won't be called until it is resumed.
-     If 'interval' is 0, it will be called every frame, but if so, it's recommended to use 'scheduleUpdateForTarget:' instead.
+     If 'interval' is 0, it will be called every frame, but if so, it recommened to use 'scheduleUpdateForTarget:' instead.
      If the selector is already scheduled, then only the interval parameter will be updated without re-scheduling it again.
-     repeat let the action be repeated repeat + 1 times, use kCCRepeatForever to let the action run continuously
+     repeat let the action be repeated repeat + 1 times, use kCCRepeatForever to let the action run continiously
      delay is the amount of time the action will wait before it'll start
 
      @since v0.99.3, repeat and delay added in v1.1
-     @js  NA
-     @lua NA
      */
-    void scheduleSelector(SEL_SCHEDULE pfnSelector, CCObject *pTarget, float fInterval, unsigned int repeat, float delay, bool bPaused);
+    void scheduleSelector(SEL_SCHEDULE pfnSelector, CCObject *pTarget, float fInterval, bool bPaused, unsigned int repeat, float delay);
 
-    /** calls scheduleSelector with kCCRepeatForever and a 0 delay 
-     *  @js NA
-     *  @lua NA
-     */
+    /** calls scheduleSelector with kCCRepeatForever and a 0 delay */
     void scheduleSelector(SEL_SCHEDULE pfnSelector, CCObject *pTarget, float fInterval, bool bPaused);
     /** Schedules the 'update' selector for a given target with a given priority.
      The 'update' selector will be called every frame.
      The lower the priority, the earlier it is called.
      @since v0.99.3
-     @lua NA
      */
     void scheduleUpdateForTarget(CCObject *pTarget, int nPriority, bool bPaused);
 
     /** Unschedule a selector for a given target.
      If you want to unschedule the "update", use unscheudleUpdateForTarget.
      @since v0.99.3
-     @lua NA
      */
     void unscheduleSelector(SEL_SCHEDULE pfnSelector, CCObject *pTarget);
 
     /** Unschedules the update selector for a given target
      @since v0.99.3
-     @lua NA
      */
     void unscheduleUpdateForTarget(const CCObject *pTarget);
 
     /** Unschedules all selectors for a given target.
      This also includes the "update" selector.
      @since v0.99.3
-     @js  unscheduleCallbackForTarget
-     @lua NA
      */
-    void unscheduleAllForTarget(CCObject *pTarget);
+    void unscheduleAllSelectorsForTarget(CCObject *pTarget);
 
     /** Unschedules all selectors from all targets.
      You should NEVER call this method, unless you know what you are doing.
 
      @since v0.99.3
-     @js unscheduleAllCallbacks
-     @lua NA
      */
-    void unscheduleAll(void);
+    void unscheduleAllSelectors(void);
     
     /** Unschedules all selectors from all targets with a minimum priority.
       You should only call this with kCCPriorityNonSystemMin or higher.
       @since v2.0.0
-      @js unscheduleAllCallbacksWithMinPriority
-      @lua NA
       */
-    void unscheduleAllWithMinPriority(int nMinPriority);
+    void unscheduleAllSelectorsWithMinPriority(int nMinPriority);
 
     /** The scheduled script callback will be called every 'interval' seconds.
      If paused is YES, then it won't be called until it is resumed.
      If 'interval' is 0, it will be called every frame.
      return schedule script entry ID, used for unscheduleScriptFunc().
-     @js NA
      */
     unsigned int scheduleScriptFunc(unsigned int nHandler, float fInterval, bool bPaused);
     
-    /** Unschedule a script entry. 
-     *  @js NA
-     */
+    /** Unschedule a script entry. */
     void unscheduleScriptEntry(unsigned int uScheduleScriptEntryID);
 
     /** Pauses the target.
      All scheduled selectors/update for a given target won't be 'ticked' until the target is resumed.
      If the target is not present, nothing happens.
      @since v0.99.3
-     @lua NA
      */
     void pauseTarget(CCObject *pTarget);
 
@@ -251,35 +208,30 @@ public:
      The 'target' will be unpaused, so all schedule selectors/update will be 'ticked' again.
      If the target is not present, nothing happens.
      @since v0.99.3
-     @lua NA
      */
     void resumeTarget(CCObject *pTarget);
 
     /** Returns whether or not the target is paused
-     @since v1.0.0
-     @lua NA
-     */
+    @since v1.0.0
+    */
     bool isTargetPaused(CCObject *pTarget);
 
     /** Pause all selectors from all targets.
-     You should NEVER call this method, unless you know what you are doing.
+      You should NEVER call this method, unless you know what you are doing.
      @since v2.0.0
-     @lua NA
-     */
+      */
     CCSet* pauseAllTargets();
 
     /** Pause all selectors from all targets with a minimum priority.
-     You should only call this with kCCPriorityNonSystemMin or higher.
-     @since v2.0.0
-     @lua NA
-     */
+      You should only call this with kCCPriorityNonSystemMin or higher.
+      @since v2.0.0
+      */
     CCSet* pauseAllTargetsWithMinPriority(int nMinPriority);
 
     /** Resume selectors on a set of targets.
      This can be useful for undoing a call to pauseAllSelectors.
      @since v2.0.0
-     @lua NA
-     */
+      */
     void resumeTargets(CCSet* targetsToResume);
 
 private:
@@ -303,7 +255,7 @@ protected:
     struct _hashUpdateEntry *m_pHashForUpdates; // hash used to fetch quickly the list entries for pause,delete,etc
 
     // Used for "selectors with interval"
-    struct _hashSelectorEntry *m_pHashForTimers;
+    struct _hashSelectorEntry *m_pHashForSelectors;
     struct _hashSelectorEntry *m_pCurrentTarget;
     bool m_bCurrentTargetSalvaged;
     // If true unschedule will not remove anything from a hash. Elements will only be marked for deletion.

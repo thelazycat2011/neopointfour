@@ -26,7 +26,7 @@
 #define __HTTP_RESPONSE__
 
 #include "cocos2d.h"
-#include "ExtensionMacros.h"
+//#include "ExtensionMacros.h"
 #include "HttpRequest.h"
 
 NS_CC_EXT_BEGIN
@@ -35,10 +35,8 @@ NS_CC_EXT_BEGIN
  @brief defines the object which users will receive at onHttpCompleted(sender, HttpResponse) callback
  Please refer to samples/TestCpp/Classes/ExtensionTest/NetworkTest/HttpClientTest.cpp as a sample
  @since v2.0.2
- @js NA
- @lua NA
  */
-class CCHttpResponse : public CCObject
+class CCHttpResponse : public cocos2d::CCObject
 {
 public:
     /** Constructor, it's used by CCHttpClient internal, users don't need to create HttpResponse manually
@@ -100,12 +98,6 @@ public:
     {
         return &_responseData;
     }
-    
-    /** get the Rawheader **/
-    inline std::vector<char>* getResponseHeader()
-    {
-        return &_responseHeader;
-    }
 
     /** Get the http response errorCode
      *  I know that you want to see http 200 :)
@@ -136,18 +128,11 @@ public:
     };
     
     
-    /** Set the http response raw buffer, is used by CCHttpClient
+    /** Set the http response raw buffer, is used by CCHttpClient      
      */
     inline void setResponseData(std::vector<char>* data)
     {
         _responseData = *data;
-    }
-    
-    /** Set the http response Header raw buffer, is used by CCHttpClient
-     */
-    inline void setResponseHeader(std::vector<char>* data)
-    {
-        _responseHeader = *data;
     }
     
     
@@ -174,7 +159,6 @@ protected:
     CCHttpRequest*        _pHttpRequest;  /// the corresponding HttpRequest pointer who leads to this response 
     bool                _succeed;       /// to indecate if the http reqeust is successful simply
     std::vector<char>   _responseData;  /// the returned raw data. You can also dump it as a string
-    std::vector<char>   _responseHeader;  /// the returned raw header data. You can also dump it as a string
     int                 _responseCode;    /// the status code returned from libcurl, e.g. 200, 404
     std::string         _errorBuffer;   /// if _responseCode != 200, please read _errorBuffer to find the reason 
     

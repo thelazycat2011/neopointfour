@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2009      Valentin Milea
 
 http://www.cocos2d-x.org
@@ -66,31 +66,15 @@ struct ccTouchHandlerHelperData {
     int  m_type;
 };
 
-/**
- * @js NA
- */
+
 class CC_DLL EGLTouchDelegate
 {
 public:
-    /**
-     * @lua NA
-     */
     virtual void touchesBegan(CCSet* touches, CCEvent* pEvent) = 0;
-    /**
-     * @lua NA
-     */
     virtual void touchesMoved(CCSet* touches, CCEvent* pEvent) = 0;
-    /**
-     * @lua NA
-     */
     virtual void touchesEnded(CCSet* touches, CCEvent* pEvent) = 0;
-    /**
-     * @lua NA
-     */
     virtual void touchesCancelled(CCSet* touches, CCEvent* pEvent) = 0;
-    /**
-     * @lua NA
-     */
+
     virtual ~EGLTouchDelegate() {}
 };
 
@@ -111,27 +95,18 @@ struct _ccCArray;
  to the Standard Touch Handlers.
 
  @since v0.8.0
- @js NA
  */
 class CC_DLL CCTouchDispatcher : public CCObject, public EGLTouchDelegate
 {
 public:
-    /**
-     * @lua NA
-     */
     ~CCTouchDispatcher();
-    /**
-     * @lua NA
-     */
     bool init(void);
-    /**
-     * @lua NA
-     */
-    CCTouchDispatcher()
+    CCTouchDispatcher() 
         : m_pTargetedHandlers(NULL)
         , m_pStandardHandlers(NULL)
         , m_pHandlersToAdd(NULL)
         , m_pHandlersToRemove(NULL)
+        
     {}
 
 public:
@@ -140,72 +115,42 @@ public:
     void setDispatchEvents(bool bDispatchEvents);
 
     /** Adds a standard touch delegate to the dispatcher's list.
-     * See StandardTouchDelegate description.
-     * IMPORTANT: The delegate will be retained.
-     * @lua NA
+     See StandardTouchDelegate description.
+     IMPORTANT: The delegate will be retained.
      */
     void addStandardDelegate(CCTouchDelegate *pDelegate, int nPriority);
 
     /** Adds a targeted touch delegate to the dispatcher's list.
-     * See TargetedTouchDelegate description.
-     * IMPORTANT: The delegate will be retained.
-     * @lua NA
+     See TargetedTouchDelegate description.
+     IMPORTANT: The delegate will be retained.
      */
     void addTargetedDelegate(CCTouchDelegate *pDelegate, int nPriority, bool bSwallowsTouches);
 
     /** Removes a touch delegate.
-     * The delegate will be released
-     * @lua NA
+     The delegate will be released
      */
     void removeDelegate(CCTouchDelegate *pDelegate);
 
-    /** Removes all touch delegates, releasing all the delegates 
-     * @lua NA
-     */
+    /** Removes all touch delegates, releasing all the delegates */
     void removeAllDelegates(void);
 
     /** Changes the priority of a previously added delegate. The lower the number,
-     * the higher the priority 
-     * @lua NA
-     */
+    the higher the priority */
     void setPriority(int nPriority, CCTouchDelegate *pDelegate);
-    /**
-     * @lua NA
-     */
+
     void touches(CCSet *pTouches, CCEvent *pEvent, unsigned int uIndex);
-    /**
-     * @lua NA
-     */
+
     virtual void touchesBegan(CCSet* touches, CCEvent* pEvent);
-    /**
-     * @lua NA
-     */
     virtual void touchesMoved(CCSet* touches, CCEvent* pEvent);
-    /**
-     * @lua NA
-     */
     virtual void touchesEnded(CCSet* touches, CCEvent* pEvent);
-    /**
-     * @lua NA
-     */
     virtual void touchesCancelled(CCSet* touches, CCEvent* pEvent);
 
-    bool getForcePrio() const;
-
-    void setForcePrio(bool);
-
-    int getTargetPrio() const;
-
-    void setTargetPrio(int);
-
-    void incrementForcePrio();
-
-    void decrementForcePrio();
+    virtual bool getForcePrio();
+    virtual void setForcePrio(bool);
+    virtual int getTargetPrio();
+    virtual void setTargetPrio(int);
 
 public:
-    /**
-     * @lua NA
-     */
     CCTouchHandler* findHandler(CCTouchDelegate *pDelegate);
 protected:
     void forceRemoveDelegate(CCTouchDelegate *pDelegate);
@@ -215,19 +160,16 @@ protected:
     CCTouchHandler* findHandler(CCArray* pArray, CCTouchDelegate *pDelegate);
 
 protected:
-    CCArray* m_pTargetedHandlers;
-    CCArray* m_pStandardHandlers;
+     CCArray* m_pTargetedHandlers;
+     CCArray* m_pStandardHandlers;
 
     bool m_bLocked;
     bool m_bToAdd;
     bool m_bToRemove;
-    CCArray* m_pHandlersToAdd;
+     CCArray* m_pHandlersToAdd;
     struct _ccCArray *m_pHandlersToRemove;
     bool m_bToQuit;
     bool m_bDispatchEvents;
-
-    bool forcePrio;
-    int targetPrio;
 
     // 4, 1 for each type of event
     struct ccTouchHandlerHelperData m_sHandlerHelperData[ccTouchMax];

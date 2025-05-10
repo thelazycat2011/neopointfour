@@ -31,62 +31,20 @@
 #include "CCPlatformConfig.h"
 #include "CCPlatformDefine.h"
 
-/**
- * define a create function for a specific type, such as CCLayer
- * @__TYPE__ class type to add create(), such as CCLayer
- */
-#define CREATE_FUNC(__TYPE__) \
-static __TYPE__* create() \
-{ \
-    __TYPE__ *pRet = new __TYPE__(); \
-    if (pRet && pRet->init()) \
-    { \
-        pRet->autorelease(); \
-        return pRet; \
-    } \
-    else \
-    { \
-        delete pRet; \
-        pRet = NULL; \
-        return NULL; \
-    } \
-}
-
-/**
- * define a node function for a specific type, such as CCLayer
- * @__TYPE__ class type to add node(), such as CCLayer
- * @deprecated: This interface will be deprecated sooner or later.
- */
-#define NODE_FUNC(__TYPE__) \
-CC_DEPRECATED_ATTRIBUTE static __TYPE__* node() \
-{ \
-    __TYPE__ *pRet = new __TYPE__(); \
-    if (pRet && pRet->init()) \
-    { \
-        pRet->autorelease(); \
-        return pRet; \
-    } \
-    else \
-    { \
-        delete pRet; \
-        pRet = NULL; \
-        return NULL; \
-    } \
-}
 
 /** @def CC_ENABLE_CACHE_TEXTURE_DATA
 Enable it if you want to cache the texture data.
-Basically, it's only enabled for Emscripten.
+Basically,it's only enabled in android
 
 It's new in cocos2d-x since v0.99.5
 */
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) || (CC_TARGET_PLATFORM == CC_PLATFORM_EMSCRIPTEN) || (CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
     #define CC_ENABLE_CACHE_TEXTURE_DATA       1
 #else
     #define CC_ENABLE_CACHE_TEXTURE_DATA       0
 #endif
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) || (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_EMSCRIPTEN)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) || (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
     /* Application will crash in glDrawElements function on some win32 computers and some android devices.
        Indices should be bound again while drawing to avoid this bug.
      */
@@ -102,10 +60,16 @@ It's new in cocos2d-x since v0.99.5
     #define NS_CC_BEGIN                     namespace cocos2d {
     #define NS_CC_END                       }
     #define USING_NS_CC                     using namespace cocos2d
+    #define NS_CC_EXT_BEGIN                 namespace cocos2d { namespace extension { 
+    #define NS_CC_EXT_END                   }} 
+    #define USING_NS_CC_EXT                 using namespace cocos2d::extension
 #else
-    #define NS_CC_BEGIN 
-    #define NS_CC_END 
-    #define USING_NS_CC 
+    #define NS_CC_BEGIN                     
+    #define NS_CC_END
+    #define USING_NS_CC                     
+    #define NS_CC_EXT_BEGIN                 
+    #define NS_CC_EXT_END    
+    #define USING_NS_CC_EXT 
 #endif 
 
 /** CC_PROPERTY_READONLY is used to declare a protected variable.
@@ -138,24 +102,6 @@ public: virtual const varType& get##funName(void);
 #define CC_PROPERTY(varType, varName, funName)\
 protected: varType varName;\
 public: virtual varType get##funName(void);\
-public: virtual void set##funName(varType var);
-
-//Andre Modification:
-#define CC_PROPERTY_NOVIRTUAL(varType, varName, funName)\
-protected: varType varName;\
-public: varType get##funName(void);\
-public: void set##funName(varType var);
-
-//Andre Modification:
-#define CC_PROPERTY_NOVIRTUAL_CONST(varType, varName, funName)\
-protected: varType varName;\
-public: varType get##funName(void) const;\
-public: void set##funName(varType var);
-
-//Andre Modification (Note from the future, this does the exact same thing as CC_SYNTHESIZE_RETAIN):
-#define CC_PROPERTY_CONST(varType, varName, funName)\
-protected: varType varName;\
-public: virtual varType get##funName(void) const;\
 public: virtual void set##funName(varType var);
 
 #define CC_PROPERTY_PASS_BY_REF(varType, varName, funName)\
@@ -213,28 +159,6 @@ public: virtual void set##funName(varType var)   \
     } \
 } 
 
-//ROBTOP DEVIRTUALIZATION MACROS
-
-#define ROB_CC_SYNTHESIZE_READONLY(varType, varName, funName)\
-protected: varType varName;\
-public: varType get##funName(void) const { return varName; }
-
-#define ROB_CC_SYNTHESIZE(varType, varName, funName)\
-protected: varType varName;\
-public: varType get##funName(void) const { return varName; }\
-public: void set##funName(varType var){ varName = var; }
-
-#define ROB_CC_PROPERTY_READONLY(varType, varName, funName)\
-protected: varType varName;\
-public: varType get##funName(void);
-
-#define ROB_CC_SYNTHESIZE_RETAIN(varType, varName, funName)    \
-private: varType varName; \
-public: varType get##funName(void) const { return varName; } \
-public: void set##funName(varType var);   \
-
-//END OF ROBTOP FUNCTION
-
 #define CC_SAFE_DELETE(p)            do { if(p) { delete (p); (p) = 0; } } while(0)
 #define CC_SAFE_DELETE_ARRAY(p)     do { if(p) { delete[] (p); (p) = 0; } } while(0)
 #define CC_SAFE_FREE(p)                do { if(p) { free(p); (p) = 0; } } while(0)
@@ -273,55 +197,67 @@ public: void set##funName(varType var);   \
 #define LUALOG(format, ...)     cocos2d::CCLog(format, ##__VA_ARGS__)
 #endif // Lua engine debug
 
-#if defined(__GNUC__) && ((__GNUC__ >= 5) || ((__GNUG__ == 4) && (__GNUC_MINOR__ >= 4))) \
-    || (defined(__clang__) && (__clang_major__ >= 3))
-#define CC_DISABLE_COPY(Class) \
-private: \
-    Class(const Class &) = delete; \
-    Class &operator =(const Class &) = delete;
-#else
-#define CC_DISABLE_COPY(Class) \
-private: \
-    Class(const Class &); \
-    Class &operator =(const Class &);
-#endif
-
 /*
  * only certain compilers support __attribute__((deprecated))
  */
 #if defined(__GNUC__) && ((__GNUC__ >= 4) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 1)))
     #define CC_DEPRECATED_ATTRIBUTE __attribute__((deprecated))
 #elif _MSC_VER >= 1400 //vs 2005 or higher
-    #define CC_DEPRECATED_ATTRIBUTE __declspec(deprecated) 
+#define CC_DEPRECATED_ATTRIBUTE __declspec(deprecated) 
 #else
     #define CC_DEPRECATED_ATTRIBUTE
 #endif 
 
 /*
- * only certain compiler support __attribute__((format))
- * formatPos - 1-based position of format string argument
- * argPos - 1-based position of first format-dependent argument
+ * Macros used to mark changes by Geometry Dash.
+ * Directly copied from: https://github.com/altalk23/cocos2d-x-gd
  */
-#if defined(__GNUC__) && (__GNUC__ >= 4)
-#define CC_FORMAT_PRINTF(formatPos, argPos) __attribute__((__format__(printf, formatPos, argPos)))
-#elif defined(__has_attribute)
-  #if __has_attribute(format)
-  #define CC_FORMAT_PRINTF(formatPos, argPos) __attribute__((__format__(printf, formatPos, argPos)))
-  #endif // __has_attribute(format)
-#else
-#define CC_FORMAT_PRINTF(formatPos, argPos)
-#endif
 
-#if defined(_MSC_VER)
-#define CC_FORMAT_PRINTF_SIZE_T "%08lX"
-#else
-#define CC_FORMAT_PRINTF_SIZE_T "%08zX"
-#endif
+/* Stringification macros */
+#define CC_GD_STR2(...) #__VA_ARGS__
+#define CC_GD_STR(...) COCOS_GD_STR2(__VA_ARGS__)
 
-#ifdef __GNUC__
-#define CC_UNUSED __attribute__ ((unused))
-#else
-#define CC_UNUSED
-#endif
+/* Concatenation macros */
+#define CC_GD_CONCAT2(In1_, In2_) In1_##In2_
+#define CC_GD_CONCAT(In1_, In2_) COCOS_GD_CONCAT2(In1_, In2_)
+
+/** @def CC_GD_ADD
+ Contained expressions are added by Geometry Dash to cocos2d.
+ */
+#define CC_GD_ADD(...) __VA_ARGS__
+
+/** @def CC_GD_REMOVE
+ Contained expressions are removed by Geometry Dash from cocos2d.
+ */
+#define CC_GD_REMOVE(...)
+
+/** @def CC_GD_ADD_BEGIN
+ Following expressions are added by Geometry Dash to cocos2d.
+ */
+#define CC_GD_ADD_BEGIN
+
+/** @def CC_GD_ADD_END
+ Terminator for CC_GD_ADD_BEGIN.
+ */
+#define CC_GD_ADD_END
+
+/** @def CC_GD_REMOVE_BEGIN
+ Following expressions are removed by Geometry Dash from cocos2d.
+ */
+#define CC_GD_REMOVE_BEGIN class CC_GD_CONCAT(Removed, __LINE__) {
+
+/** @def CC_GD_REMOVE_END
+ Terminator for CC_GD_REMOVE_BEGIN.
+ */
+#define CC_GD_REMOVE_END };
+
+CC_GD_ADD_BEGIN
+
+#define CC_PROPERTY_RET_CONST(varType, varName, funName)\
+protected: varType varName;\
+public: virtual const varType get##funName(void);\
+public: virtual void set##funName(varType var);
+
+CC_GD_ADD_END
 
 #endif // __CC_PLATFORM_MACROS_H__

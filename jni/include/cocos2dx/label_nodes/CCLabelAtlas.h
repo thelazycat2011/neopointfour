@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2008-2010 Ricardo Quesada
 Copyright (c) 2011      Zynga Inc.
 
@@ -51,47 +51,43 @@ A more flexible class is CCLabelBMFont. It supports variable width characters an
 class CC_DLL CCLabelAtlas : public CCAtlasNode, public CCLabelProtocol
 {
 public:
-    /**
-     *  @js ctor
-     *  @lua NA
-     */
     CCLabelAtlas()
         :m_sString("")
     {}
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCLabelAtlas()
     { 
         m_sString.clear(); 
     }
+    /** creates the CCLabelAtlas with a string, a char map file(the atlas), the width and height of each element and the starting char of the atlas 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCLabelAtlas * labelWithString(const char *label, const char *charMapFile, unsigned int itemWidth, unsigned int itemHeight, unsigned int startCharMap);
+    
+    /** creates the CCLabelAtlas with a string and a configuration file
+    @deprecated: This interface will be deprecated sooner or later.
+    @since v2.0
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCLabelAtlas* labelWithString(const char *sring, const char *fntFile);
 
     /** creates the CCLabelAtlas with a string, a char map file(the atlas), the width and height of each element and the starting char of the atlas */
-    static CCLabelAtlas * create(const char *string, const char *charMapFile, unsigned int itemWidth, unsigned int itemHeight, unsigned int startCharMap);
+    static CCLabelAtlas * create(const char *label, const char *charMapFile, unsigned int itemWidth, unsigned int itemHeight, unsigned int startCharMap);
     
     /** creates the CCLabelAtlas with a string and a configuration file
      @since v2.0
-     @js _create
      */
-    static CCLabelAtlas* create(const char *string, const char *fntFile);
+    static CCLabelAtlas* create(const char *sring, const char *fntFile);
 
     /** initializes the CCLabelAtlas with a string, a char map file(the atlas), the width and height of each element and the starting char of the atlas */
-    bool initWithString(const char *string, const char *charMapFile, unsigned int itemWidth, unsigned int itemHeight, unsigned int startCharMap);
+    bool initWithString(const char *label, const char *charMapFile, unsigned int itemWidth, unsigned int itemHeight, unsigned int startCharMap);
     
     /** initializes the CCLabelAtlas with a string and a configuration file
      @since v2.0
      */
     bool initWithString(const char *string, const char *fntFile);
-    
-    /** initializes the CCLabelAtlas with a string, a texture, the width and height in points of each element and the starting char of the atlas */
-    bool initWithString(const char* string, CCTexture2D* texture, unsigned int itemWidth, unsigned int itemHeight, unsigned int startCharMap);
-    
     // super methods
     virtual void updateAtlasValues();
     virtual void setString(const char *label);
     virtual const char* getString(void);
-    
 #if CC_LABELATLAS_DEBUG_DRAW
     virtual void draw();
 #endif

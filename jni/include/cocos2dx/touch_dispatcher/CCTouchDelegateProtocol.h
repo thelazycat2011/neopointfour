@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2009      Valentin Milea
 
 http://www.cocos2d-x.org
@@ -39,8 +39,6 @@ class CCTouchDispatcher;
 /**
  * @addtogroup input
  * @{
- * @js NA
- * @lua NA
  */
 
 class CC_DLL CCTouchDelegate
@@ -74,14 +72,12 @@ public:
  them. You get exactly one UITouch per call.
  - 2. You can *claim* a UITouch by returning YES in ccTouchBegan. Updates of claimed
  touches are sent only to the delegate(s) that claimed them. So if you get a move/
- ended/canceled update you're sure it's your touch. This frees you from doing a
+ ended/cancelled update you're sure it's your touch. This frees you from doing a
  lot of checks when doing multi-touch. 
 
  (The name TargetedTouchDelegate relates to updates "targeting" their specific
  handler, without bothering the other handlers.)
  @since v0.8
- @js NA
- @lua NA
  */
  class CC_DLL CCTargetedTouchDelegate : public CCTouchDelegate
  {
@@ -98,10 +94,8 @@ public:
  };
  
 /** @brief
- This type of delegate is the same one used by CocoaTouch. You will receive all the events (Began,Moved,Ended,Canceled).
+ This type of delegate is the same one used by CocoaTouch. You will receive all the events (Began,Moved,Ended,Cancelled).
  @since v0.8
- @js NA
- @lua NA
  */
  class CC_DLL CCStandardTouchDelegate : public CCTouchDelegate
  {

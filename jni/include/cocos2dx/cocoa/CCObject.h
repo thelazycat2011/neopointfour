@@ -25,12 +25,15 @@ THE SOFTWARE.
 #ifndef __CCOBJECT_H__
 #define __CCOBJECT_H__
 
-#include "CCDataVisitor.h"
+#include "platform/CCPlatformMacros.h"
 
-#ifdef EMSCRIPTEN
-#include <GLES2/gl2.h>
-#endif // EMSCRIPTEN
-class DS_Dictionary;
+class DS_Dictionary
+{
+public:
+    void setIntegerForKey(const char*, int);
+    int getIntegerForKey(const char*);
+};
+
 NS_CC_BEGIN
 
 /**
@@ -42,20 +45,25 @@ class CCZone;
 class CCObject;
 class CCNode;
 class CCEvent;
-enum CCObjectType : int;
-/**
- * @js NA
- * @lua NA
- */
+
+CC_GD_ADD_BEGIN
+
+enum CCObjectType
+{
+    kCCObjectTypeNone = 0,
+    kCCObjectTypePlayLayer = 5,
+    kCCObjectTypeLevelEditorLayer = 6,
+    kCCObjectTypeMenuLayer = 15,
+};
+
+CC_GD_ADD_END
+
 class CC_DLL CCCopying
 {
 public:
     virtual CCObject* copyWithZone(CCZone* pZone);
 };
 
-/**
- * @js NA
- */
 class CC_DLL CCObject : public CCCopying
 {
 public:
@@ -64,38 +72,35 @@ public:
     // Lua reference id
     int                 m_nLuaID;
 protected:
-    // count of references
+    // count of refrence
     unsigned int        m_uReference;
+    // is the object autoreleased
+    bool        m_bManaged;        
 
-    CCObjectType        m_CCObjectType;
-
-    // count of autorelease
-    unsigned int        m_uAutoReleaseCount;
-
-//    unsigned int        m_uPadding;
+    CC_GD_ADD( CCObjectType m_eObjType; )
 public:
     CCObject(void);
-    /**
-     *  @lua NA
-     */
     virtual ~CCObject(void);
-
+    
     void release(void);
     void retain(void);
     CCObject* autorelease(void);
     CCObject* copy(void);
-    bool isSingleReference(void) const;
-    unsigned int retainCount(void) const;
+    bool isSingleRefrence(void);
+    unsigned int retainCount(void);
     virtual bool isEqual(const CCObject* pObject);
 
-    virtual void acceptVisitor(CCDataVisitor &visitor);
     virtual void update(float dt) {CC_UNUSED_PARAM(dt);};
+    
+    CC_GD_ADD_BEGIN
 
-    virtual CCObjectType getObjType() const;
-    virtual void setObjType(CCObjectType);
+    virtual CCObjectType getObjType() const { return m_eObjType; }
+    virtual void setObjType(const CCObjectType& var) { m_eObjType = var; }
+    CCObject* createWithCoder(DS_Dictionary*);
+    virtual void encodeWithEncoder(DS_Dictionary*) {}
+    virtual bool canEncode();
 
-    virtual void encodeWithCoder(DS_Dictionary*); //Robtop Modification
-    virtual bool canEncode();    //Robtop Modification
+    CC_GD_ADD_END
 
     friend class CCAutoreleasePool;
 };

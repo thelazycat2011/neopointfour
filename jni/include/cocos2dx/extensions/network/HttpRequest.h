@@ -26,24 +26,16 @@
 #define __HTTP_REQUEST_H__
 
 #include "cocos2d.h"
-#include "ExtensionMacros.h"
+//#include "ExtensionMacros.h"
 
 NS_CC_EXT_BEGIN
-
-class CCHttpClient;
-class CCHttpResponse;
-typedef void (CCObject::*SEL_HttpResponse)(CCHttpClient* client, CCHttpResponse* response);
-#define httpresponse_selector(_SELECTOR) (cocos2d::extension::SEL_HttpResponse)(&_SELECTOR)
 
 /** 
  @brief defines the object which users must packed for CCHttpClient::send(HttpRequest*) method.
  Please refer to samples/TestCpp/Classes/ExtensionTest/NetworkTest/HttpClientTest.cpp as a sample
  @since v2.0.2
- @js NA
- @lua NA
  */
-
-class CCHttpRequest : public CCObject
+class CCHttpRequest : public cocos2d::CCObject
 {
 public:
     /** Use this enum type as param in setReqeustType(param) */
@@ -51,8 +43,6 @@ public:
     {
         kHttpGet,
         kHttpPost,
-        kHttpPut,
-        kHttpDelete,
         kHttpUnkown,
     } HttpRequestType;
     
@@ -165,12 +155,7 @@ public:
     
     /** Required field. You should set the callback selector function at ack the http request completed
      */
-    CC_DEPRECATED_ATTRIBUTE inline void setResponseCallback(CCObject* pTarget, SEL_CallFuncND pSelector)
-    {
-        setResponseCallback(pTarget, (SEL_HttpResponse) pSelector);
-    }
-
-    inline void setResponseCallback(CCObject* pTarget, SEL_HttpResponse pSelector)
+    inline void setResponseCallback(cocos2d::CCObject* pTarget, cocos2d::SEL_CallFuncND pSelector)
     {
         _pTarget = pTarget;
         _pSelector = pSelector;
@@ -185,49 +170,21 @@ public:
     {
         return _pTarget;
     }
-
-    /* This sub class is just for migration SEL_CallFuncND to SEL_HttpResponse, 
-       someday this way will be removed */
-    class _prxy
-    {
-    public:
-        _prxy( SEL_HttpResponse cb ) :_cb(cb) {}
-        ~_prxy(){};
-        operator SEL_HttpResponse() const { return _cb; }
-        CC_DEPRECATED_ATTRIBUTE operator SEL_CallFuncND()   const { return (SEL_CallFuncND) _cb; }
-    protected:
-        SEL_HttpResponse _cb;
-    };
-    
     /** Get the selector function pointer, mainly used by CCHttpClient */
-    inline _prxy getSelector()
+    inline cocos2d::SEL_CallFuncND getSelector()
     {
-        return _prxy(_pSelector);
+        return _pSelector;
     }
-    
-    /** Set any custom headers **/
-    inline void setHeaders(std::vector<std::string> pHeaders)
-   	{
-   		_headers=pHeaders;
-   	}
-   
-    /** Get custom headers **/
-   	inline std::vector<std::string> getHeaders()
-   	{
-   		return _headers;
-   	}
-
-
+        
 protected:
     // properties
     HttpRequestType             _requestType;    /// kHttpRequestGet, kHttpRequestPost or other enums
     std::string                 _url;            /// target url that this request is sent to
     std::vector<char>           _requestData;    /// used for POST
     std::string                 _tag;            /// user defined tag, to identify different requests in response callback
-    CCObject*          _pTarget;        /// callback target of pSelector function
-    SEL_HttpResponse            _pSelector;      /// callback function, e.g. MyLayer::onHttpResponse(CCHttpClient *sender, CCHttpResponse * response)
+    cocos2d::CCObject*          _pTarget;        /// callback target of pSelector function
+    cocos2d::SEL_CallFuncND     _pSelector;      /// callback function, e.g. MyLayer::onHttpResponse(CCObject *sender, void *data)
     void*                       _pUserData;      /// You can add your customed data here 
-    std::vector<std::string>    _headers;		      /// custom http headers
 };
 
 NS_CC_EXT_END

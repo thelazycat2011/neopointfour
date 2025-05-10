@@ -63,25 +63,24 @@ protected:
     GLuint                m_pBuffersVBO[2]; //0: vertex  1: indices
 
 public:
-    /**
-     * @js ctor
-     */
     CCParticleSystemQuad();
-    /**
-     * @js NA
-     * @lua NA
-     */
     virtual ~CCParticleSystemQuad();
 
     /** creates an initializes a CCParticleSystemQuad from a plist file.
-    This plist files can be created manually or with Particle Designer:  
+    This plist files can be creted manually or with Particle Designer:  
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCParticleSystemQuad * particleWithFile(const char *plistFile);
+
+    /** creates an initializes a CCParticleSystemQuad from a plist file.
+    This plist files can be creted manually or with Particle Designer:  
     */
     static CCParticleSystemQuad * create(const char *plistFile);
 
-    /** initializes the indices for the vertices*/
-    void initIndices();
+    /** initialices the indices for the vertices*/
+    void setupIndices();
 
-    /** initializes the texture with a rectangle measured Points */
+    /** initilizes the texture with a rectangle measured Points */
     void initTexCoordsWithRect(const CCRect& rect);
 
     /** Sets a new CCSpriteFrame as particle.
@@ -94,45 +93,23 @@ public:
     @since v0.99.4
     */
     void setTextureWithRect(CCTexture2D *texture, const CCRect& rect);
-    /** super methods
-     *  @js NA
-     *  @lua NA
-     */
+    // super methods
     virtual bool initWithTotalParticles(unsigned int numberOfParticles);
-    /**
-     * @js NA
-     */
     virtual void setTexture(CCTexture2D* texture);
-    /**
-     * @js NA
-     */
     virtual void updateQuadWithParticle(tCCParticle* particle, const CCPoint& newPosition);
-    /**
-     * @js NA
-     */
     virtual void postStep();
-    /**
-     * @js NA
-     * @lua NA
-     */
     virtual void draw();
-    /**
-     * @js NA
-     */
     virtual void setBatchNode(CCParticleBatchNode* batchNode);
-    /**
-     * @js NA
-     */
     virtual void setTotalParticles(unsigned int tp);
     
     /** listen the event that coming to foreground on Android
-     *  @js NA
-     *  @lua NA
      */
     void listenBackToForeground(CCObject *obj);
 
+    //@deprecated: This interface will be deprecated sooner or later.
+    CC_DEPRECATED_ATTRIBUTE static CCParticleSystemQuad * node();
+
     static CCParticleSystemQuad * create();
-    static CCParticleSystemQuad * createWithTotalParticles(unsigned int numberOfParticles);
 private:
 #if CC_TEXTURE_ATLAS_USE_VAO
     void setupVBOandVAO();

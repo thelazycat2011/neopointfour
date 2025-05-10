@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2010      Neophit
 Copyright (c) 2010      Ricardo Quesada
 Copyright (c) 2011      Zynga Inc.
@@ -51,14 +51,7 @@ class CC_DLL CCTMXObjectGroup : public CCObject
     /** array of the objects */
     CC_PROPERTY(CCArray*, m_pObjects, Objects);
 public:
-    /**
-     * @js ctor
-     */
     CCTMXObjectGroup();
-    /**
-     * @js NA
-     * @lua NA
-     */
     virtual ~CCTMXObjectGroup();
 
     inline const char* getGroupName(){ return m_sGroupName.c_str(); }

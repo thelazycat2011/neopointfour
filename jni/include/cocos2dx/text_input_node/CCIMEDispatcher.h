@@ -36,8 +36,6 @@ NS_CC_BEGIN
 
 /**
 @brief    Input Method Edit Message Dispatcher.
-@js NA
-@lua NA
 */
 class CC_DLL CCIMEDispatcher
 {
@@ -50,22 +48,22 @@ public:
     static CCIMEDispatcher* sharedDispatcher();
 
 //     /**
-//     @brief Releases all CCIMEDelegates from the shared dispatcher.
+//     @brief Release all CCIMEDelegates from shared dispatcher.
 //     */
 //     static void purgeSharedDispatcher();
 
     /**
-    @brief Dispatches the input text from IME.
+    @brief dispatch the input text from ime
     */
     void dispatchInsertText(const char * pText, int nLen);
 
     /**
-    @brief Dispatches the delete-backward operation.
+    @brief    dispatch the delete backward operation
     */
     void dispatchDeleteBackward();
 
     /**
-    @brief Get the content text from CCIMEDelegate, retrieved previously from IME.
+    @brief    get the content text, which current CCIMEDelegate which attached with IME has.
     */
     const char * getContentText();
 
@@ -77,24 +75,24 @@ public:
     void dispatchKeyboardWillHide(CCIMEKeyboardNotificationInfo& info);
     void dispatchKeyboardDidHide(CCIMEKeyboardNotificationInfo& info);
 
-protected:
+//protected: // !! HACK !!
     friend class CCIMEDelegate;
 
     /**
-    @brief Add delegate to receive IME messages.
+    @brief add delegate to concern ime msg
     */
     void addDelegate(CCIMEDelegate * pDelegate);
 
     /**
-    @brief Attach the pDelegate to the IME.
-    @return If the old delegate can detach from the IME, and the new delegate 
-            can attach to the IME, return true, otherwise false.
+    @brief    attach the pDeleate with ime.
+    @return If the old delegate can detattach with ime and the new delegate 
+            can attach with ime, return true, otherwise return false.
     */
     bool attachDelegateWithIME(CCIMEDelegate * pDelegate);
     bool detachDelegateWithIME(CCIMEDelegate * pDelegate);
 
     /**
-    @brief Remove the delegate from the delegates which receive IME messages.
+    @brief remove the delegate from the delegates who concern ime msg
     */
     void removeDelegate(CCIMEDelegate * pDelegate);
 

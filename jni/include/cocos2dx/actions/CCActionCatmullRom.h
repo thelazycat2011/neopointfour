@@ -26,7 +26,7 @@
  * THE SOFTWARE.
  *
  *
- * Original code by Radu Gruian: http://www.codeproject.com/Articles/30838/Overhauser-Catmull-Rom-Splines-for-Camera-Animatio.So
+ * Orignal code by Radu Gruian: http://www.codeproject.com/Articles/30838/Overhauser-Catmull-Rom-Splines-for-Camera-Animatio.So
  *
  * Adapted to cocos2d-x by Vit Valentin
  *
@@ -36,8 +36,6 @@
 
 #ifndef __CCACTION_CATMULLROM_H__
 #define __CCACTION_CATMULLROM_H__
-
-#include <vector>
 
 #include "CCActionInterval.h"
 #include "base_nodes/CCNode.h"
@@ -51,25 +49,21 @@ NS_CC_BEGIN;
  */
 
 /** An Array that contain control points.
- * Used by CCCardinalSplineTo and (By) and CCCatmullRomTo (and By) actions.
- * @ingroup Actions
- * @js NA
+ Used by CCCardinalSplineTo and (By) and CCCatmullRomTo (and By) actions.
+@ingroup Actions
  */
-class CC_DLL CCPointArray : public CCObject
+class CC_DLL CCPointArray : public CCNode
 {
 public:
-    
     /** creates and initializes a Points array with capacity 
-     * @lua NA
-     */
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCPointArray* arrayWithCapacity(unsigned int capacity);
+    
+    /** creates and initializes a Points array with capacity */
     static CCPointArray* create(unsigned int capacity);
-    /**
-     * @lua NA
-     */
+
     virtual ~CCPointArray();
-    /**
-     * @lua NA
-     */
     CCPointArray();
     
     /** initializes a Catmull Rom config with a capacity hint */
@@ -98,18 +92,19 @@ public:
     
     /** reverse the current control point array inline, without generating a new one */
     void reverseInline();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+    
     virtual CCObject* copyWithZone(CCZone *zone);
     
-    const std::vector<CCPoint*>* getControlPoints();
-
-    void setControlPoints(std::vector<CCPoint*> *controlPoints);
+    inline CCArray* getControlPoints(){ return m_pControlPoints; }
+    inline void setControlPoints(CCArray *controlPoints)
+    {
+        CC_SAFE_RETAIN(controlPoints);
+        CC_SAFE_RELEASE(m_pControlPoints);
+        m_pControlPoints = controlPoints;
+    }
 private:
     /** Array that contains the control points */
-    std::vector<CCPoint*> *m_pControlPoints;
+    CCArray *m_pControlPoints;
 };
 
 /** Cardinal Spline path.
@@ -119,55 +114,30 @@ private:
 class CC_DLL CCCardinalSplineTo : public CCActionInterval
 {
 public:
-
     /** creates an action with a Cardinal Spline array of points and tension 
-     *  @code
-     *  when thie function bound to js,the input params are changed
-     *  js:var create(var duration,var pointTable,var tension)
-     *  @endcode
-     */
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCCardinalSplineTo* actionWithDuration(float duration, CCPointArray* points, float tension);
+
+    /** creates an action with a Cardinal Spline array of points and tension */
     static CCCardinalSplineTo* create(float duration, CCPointArray* points, float tension);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+
     virtual ~CCCardinalSplineTo();
-    /**
-     *  @js ctor
-     *  @lua NA
-     */
     CCCardinalSplineTo();
     
-    /** initializes the action with a duration and an array of points 
-     *  @lua NA
-     */
+    /** initializes the action with a duration and an array of points */
     bool initWithDuration(float duration, CCPointArray* points, float tension);
     
     // super virtual functions
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCCardinalSplineTo* copyWithZone(CCZone* pZone);
-    /**
-     *  @lua NA
-     */
     virtual void startWithTarget(CCNode *pTarget);
-    /**
-     *  @lua NA
-     */
     virtual void update(float time);
     virtual CCActionInterval* reverse();
-    /**
-     *  @lua NA
-     */
+    
     virtual void updatePosition(CCPoint &newPos);
     
     inline CCPointArray* getPoints() { return m_pPoints; }
-    /**
-     *  @js NA
-     */
-    inline void  setPoints(CCPointArray* points)
+    inline void  setPoints(CCPointArray* points) 
     {
         CC_SAFE_RETAIN(points);
         CC_SAFE_RELEASE(m_pPoints);
@@ -179,8 +149,6 @@ protected:
     CCPointArray *m_pPoints;
     float m_fDeltaT;
     float m_fTension;
-    CCPoint	m_previousPosition;
-    CCPoint	m_accumulatedDiff;
 };
 
 /** Cardinal Spline path.
@@ -190,27 +158,18 @@ protected:
 class CC_DLL CCCardinalSplineBy : public CCCardinalSplineTo 
 {
 public:
-    
     /** creates an action with a Cardinal Spline array of points and tension 
-     *  @code
-     *  when thie function bound to js,the input params are changed
-     *  js:var create(var duration,var pointTable,var tension)
-     *  @endcode
-     */
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCCardinalSplineBy* actionWithDuration(float duration, CCPointArray* points, float tension);
+    
+    /** creates an action with a Cardinal Spline array of points and tension */
     static CCCardinalSplineBy* create(float duration, CCPointArray* points, float tension);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+
     CCCardinalSplineBy();
-    /**
-     *  @lua NA
-     */
+    
     virtual void startWithTarget(CCNode *pTarget);
     virtual CCActionInterval* reverse();
-    /**
-     *  @lua NA
-     */
     virtual void updatePosition(CCPoint &newPos);
 protected:
     CCPoint m_startPosition;
@@ -224,19 +183,15 @@ protected:
 class CC_DLL CCCatmullRomTo : public CCCardinalSplineTo
 {
 public:
-    
     /** creates an action with a Cardinal Spline array of points and tension 
-     *  @code
-     *  when this function bound to js,the input params are changed
-     *  js:var create(var dt,var pointTable)
-     *  @endcode
-     */
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCCatmullRomTo* actionWithDuration(float dt, CCPointArray* points);
+    
+    /** creates an action with a Cardinal Spline array of points and tension */
     static CCCatmullRomTo* create(float dt, CCPointArray* points);
 
-    /** initializes the action with a duration and an array of points 
-     *  @js NA
-     *  @lua NA
-     */
+    /** initializes the action with a duration and an array of points */
     bool initWithDuration(float dt, CCPointArray* points);
 };
 
@@ -248,19 +203,15 @@ public:
 class CC_DLL CCCatmullRomBy : public CCCardinalSplineBy
 {
 public:
-    
     /** creates an action with a Cardinal Spline array of points and tension 
-     *  @code
-     *  when this function bound to js,the input params are changed
-     *  js:var create(var dt,var pointTable)
-     *  @endcode
-     */
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCCatmullRomBy* actionWithDuration(float dt, CCPointArray* points);
+    
+    /** creates an action with a Cardinal Spline array of points and tension */
     static CCCatmullRomBy* create(float dt, CCPointArray* points);
 
-    /** initializes the action with a duration and an array of points 
-     *  @js NA
-     *  @lua NA
-     */
+    /** initializes the action with a duration and an array of points */
     bool initWithDuration(float dt, CCPointArray* points);
 };
 

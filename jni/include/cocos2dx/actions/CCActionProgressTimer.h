@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (C) 2010      Lam Pham
 
 http://www.cocos2d-x.org
@@ -43,15 +43,16 @@ class CC_DLL CCProgressTo : public CCActionInterval
 public:
     /** Initializes with a duration and a percent */
     bool initWithDuration(float duration, float fPercent);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+
     virtual CCObject* copyWithZone(CCZone *pZone);
     virtual void startWithTarget(CCNode *pTarget);
     virtual void update(float time);
 
 public:
+    /** Creates and initializes with a duration and a percent 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCProgressTo* actionWithDuration(float duration, float fPercent);
     /** Creates and initializes with a duration and a percent */
     static CCProgressTo* create(float duration, float fPercent);
 protected:
@@ -68,17 +69,17 @@ class CC_DLL CCProgressFromTo : public CCActionInterval
 public:
     /** Initializes the action with a duration, a "from" percentage and a "to" percentage */
     bool initWithDuration(float duration, float fFromPercentage, float fToPercentage);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+
     virtual CCObject* copyWithZone(CCZone *pZone);
     virtual CCActionInterval* reverse(void);
     virtual void startWithTarget(CCNode *pTarget);
     virtual void update(float time);
 
 public:
-
+    /** Creates and initializes the action with a duration, a "from" percentage and a "to" percentage 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCProgressFromTo* actionWithDuration(float duration, float fFromPercentage, float fToPercentage);
     /** Creates and initializes the action with a duration, a "from" percentage and a "to" percentage */
     static CCProgressFromTo* create(float duration, float fFromPercentage, float fToPercentage);
 protected:

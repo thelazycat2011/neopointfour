@@ -26,9 +26,6 @@ THE SOFTWARE.
 #define __MISC_NODE_CCPROGRESS_TIMER_H__
 
 #include "sprite_nodes/CCSprite.h"
-#ifdef EMSCRIPTEN
-#include "base_nodes/CCGLBufferedNode.h"
-#endif // EMSCRIPTEN
 
 NS_CC_BEGIN
 
@@ -48,25 +45,15 @@ typedef enum {
 } CCProgressTimerType;
 
 /**
- @brief CCProgressTimer is a subclass of CCNode.
+ @brief CCProgresstimer is a subclass of CCNode.
  It renders the inner sprite according to the percentage.
  The progress can be Radial, Horizontal or vertical.
  @since v0.99.1
  */
-class CC_DLL CCProgressTimer : public CCNodeRGBA
-#ifdef EMSCRIPTEN
-, public CCGLBufferedNode
-#endif // EMSCRIPTEN
+class CC_DLL CCProgressTimer : public CCNode, public CCRGBAProtocol
 {
 public:
-    /**
-     * @js ctor
-     */
     CCProgressTimer();
-    /**
-     * @js NA
-     * @lua NA
-     */
     ~CCProgressTimer(void);
 
     /**    Change the percentage to change progress. */
@@ -84,36 +71,35 @@ public:
     void setPercentage(float fPercentage);
     void setSprite(CCSprite *pSprite);
     void setType(CCProgressTimerType type);
-    /**
-     *  @js setReverseDirection
-     */
     void setReverseProgress(bool reverse);
 
     virtual void draw(void);
     void setAnchorPoint(CCPoint anchorPoint);
 
     virtual void setColor(const ccColor3B& color);
-    virtual const ccColor3B& getColor() const;
-    virtual GLubyte getOpacity() const;
+    virtual const ccColor3B& getColor(void);
+    virtual GLubyte getOpacity(void);
     virtual void setOpacity(GLubyte opacity);
+    virtual void setOpacityModifyRGB(bool bValue);
+    virtual bool isOpacityModifyRGB(void);
     
     inline bool isReverseDirection() { return m_bReverseDirection; };
     inline void setReverseDirection(bool value) { m_bReverseDirection = value; };
 
 public:
+    /** Creates a progress timer with the sprite as the shape the timer goes through 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCProgressTimer* progressWithSprite(CCSprite* sp);
     /** Creates a progress timer with the sprite as the shape the timer goes through */
     static CCProgressTimer* create(CCSprite* sp);
-    
-    //Robtop Modification
-    void updateColor(void);
-
 protected:
     ccTex2F textureCoordFromAlphaPoint(CCPoint alpha);
     ccVertex2F vertexFromAlphaPoint(CCPoint alpha);
     void updateProgress(void);
     void updateBar(void);
     void updateRadial(void);
-    //void updateColor(void);
+    void updateColor(void);
     CCPoint boundaryTexCoord(char index);
 
 protected:
@@ -141,9 +127,7 @@ protected:
      *    For example you want a left to right bar but not have the height stay 100%
      *    Set the rate to be ccp(0,1); and set the midpoint to = ccp(0,.5f);
      */
-    
-     //Robtop Modification
-    ROB_CC_SYNTHESIZE(CCPoint, m_tBarChangeRate, BarChangeRate);
+    CC_SYNTHESIZE(CCPoint, m_tBarChangeRate, BarChangeRate);
 
     bool m_bReverseDirection;
 };

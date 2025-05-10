@@ -80,7 +80,7 @@ namespace cocos2d {
 #include "mz64conf.h"
 #endif
 
-/* a type chosen by DEFINE */
+/* a type choosen by DEFINE */
 #ifdef HAVE_64BIT_INT_CUSTOM
 typedef  64BIT_INT_CUSTOM_TYPE ZPOS64_T;
 #else

@@ -36,24 +36,22 @@ class CCTextFieldTTF;
 /**
  * @addtogroup input
  * @{
- * @js NA
- * @lua NA
  */
 
 class CC_DLL CCTextFieldDelegate
 {
 public:
     /**
-    @brief    If the sender doesn't want to attach to the IME, return true;
+    @brief    If the sender doesn't want to attach with IME, return true;
     */
     virtual bool onTextFieldAttachWithIME(CCTextFieldTTF * sender)
-    {
+    { 
         CC_UNUSED_PARAM(sender);
         return false;
     }
 
     /**
-    @brief    If the sender doesn't want to detach from the IME, return true;
+    @brief    If the sender doesn't want to detach with IME, return true;
     */
     virtual bool onTextFieldDetachWithIME(CCTextFieldTTF * sender)
     {
@@ -84,7 +82,7 @@ public:
     }
 
     /**
-    @brief    If the sender doesn't want to draw, return true.
+    @brief    If doesn't want draw sender as default, return true.
     */
     virtual bool onDraw(CCTextFieldTTF * sender)
     {
@@ -95,18 +93,11 @@ public:
 
 /**
 @brief    A simple text input field with TTF font.
-@js NA
 */
 class CC_DLL CCTextFieldTTF : public CCLabelTTF, public CCIMEDelegate
 {
 public:
-    /**
-     *  @lua NA
-     */
     CCTextFieldTTF();
-    /**
-     *  @lua NA
-     */
     virtual ~CCTextFieldTTF();
 
     //char * description();
@@ -126,20 +117,22 @@ public:
     virtual bool attachWithIME();
 
     /**
-    @brief    End text input and close keyboard.
+    @brief    End text input  and close keyboard.
     */
     virtual bool detachWithIME();
 
     //////////////////////////////////////////////////////////////////////////
     // properties
     //////////////////////////////////////////////////////////////////////////
+    
+    CC_SYNTHESIZE(CCTextFieldDelegate *, m_pDelegate, Delegate);
+    CC_SYNTHESIZE_READONLY(int, m_nCharCount, CharCount);
+    CC_SYNTHESIZE_PASS_BY_REF(ccColor3B, m_ColorSpaceHolder, ColorSpaceHolder);
 
-    //Robtop Modifications:
-    ROB_CC_SYNTHESIZE(CCTextFieldDelegate *, m_pDelegate, Delegate);
-    ROB_CC_SYNTHESIZE_READONLY(int, m_nCharCount, CharCount);
-    virtual const ccColor3B& getColorSpaceHolder();
-    virtual void setColorSpaceHolder(const ccColor3B& color);
-
+    // input text property
+public:
+    virtual void setString(const char *text);
+    virtual const char* getString(void);
 protected:
     std::string * m_pInputText;
 
@@ -150,13 +143,6 @@ public:
     virtual const char * getPlaceHolder(void);
 protected:
     std::string * m_pPlaceHolder;
-    ccColor3B m_ColorSpaceHolder;
-public:
-    virtual void setSecureTextEntry(bool value);
-    virtual bool isSecureTextEntry();
-
-protected:
-    bool m_bSecureTextEntry;
 protected:
 
     virtual void draw();

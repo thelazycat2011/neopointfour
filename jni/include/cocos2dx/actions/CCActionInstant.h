@@ -28,7 +28,6 @@ THE SOFTWARE.
 #define __CCINSTANT_ACTION_H__
 
 #include <string>
-#include "ccTypeInfo.h"
 #include "CCAction.h"
 
 NS_CC_BEGIN
@@ -45,20 +44,9 @@ the CCIntervalAction actions.
 class CC_DLL CCActionInstant : public CCFiniteTimeAction //<NSCopying>
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCActionInstant();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCActionInstant(){}
     // CCAction methods
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone *pZone);
     virtual bool isDone(void);
     virtual void step(float dt);
@@ -72,25 +60,18 @@ public:
 class CC_DLL CCShow : public CCActionInstant
 {
 public:
-    /**
-     *  @js ctor
-     *  @lua NA
-     */
     CCShow(){}
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCShow(){}
     //super methods
     virtual void update(float time);
     virtual CCFiniteTimeAction * reverse(void);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone *pZone);
 public:
+    //override static method
+    /** Allocates and initializes the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCShow * action();
 
     /** Allocates and initializes the action */
     static CCShow * create();
@@ -104,28 +85,18 @@ public:
 class CC_DLL CCHide : public CCActionInstant
 {
 public:
-    /**
-     *  @js ctor
-     *  @lua NA
-     */
     CCHide(){}
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCHide(){}
     //super methods
-    /**
-     *  @lua NA
-     */
     virtual void update(float time);
     virtual CCFiniteTimeAction * reverse(void);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone *pZone);
 public:
+    //override static method
+    /** Allocates and initializes the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCHide * action();
 
     /** Allocates and initializes the action */
     static CCHide * create();
@@ -136,70 +107,38 @@ public:
 class CC_DLL CCToggleVisibility : public CCActionInstant
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCToggleVisibility(){}
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCToggleVisibility(){}
     //super method
     virtual void update(float time);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone *pZone);
 public:
+    //override static method
+    /** Allocates and initializes the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCToggleVisibility * action();
 
     /** Allocates and initializes the action */
     static CCToggleVisibility * create();
 };
 
 /** 
- @brief Remove the node
- @js NA
- @lua NA
- */
-class CC_DLL CCRemoveSelf : public CCActionInstant
-{
-public:
-	CCRemoveSelf(){}
-	virtual ~CCRemoveSelf(){}
-	//super methods
-	virtual void update(float time);
-	virtual CCFiniteTimeAction * reverse(void);
-	virtual CCObject* copyWithZone(CCZone *pZone);
-public:
-	/** create the action */
-	static CCRemoveSelf * create(bool isNeedCleanUp = true);
-	/** init the action */
-	bool init(bool isNeedCleanUp);
-protected:
-	bool m_bIsNeedCleanUp;
-};
-
-/** 
 @brief Flips the sprite horizontally
 @since v0.99.0
-@js NA
 */
 class CC_DLL CCFlipX : public CCActionInstant
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCFlipX()
         :m_bFlipX(false)
     {}
-    /**
-     *  @js  NA
-     *  @lua NA
-     */
     virtual ~CCFlipX(){}
+
+    /** create the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCFlipX * actionWithFlipX(bool x);
 
     /** create the action */
     static CCFlipX * create(bool x);
@@ -209,9 +148,6 @@ public:
     //super methods
     virtual void update(float time);
     virtual CCFiniteTimeAction * reverse(void);
-    /**
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone *pZone);
 
 protected:
@@ -221,22 +157,19 @@ protected:
 /** 
 @brief Flips the sprite vertically
 @since v0.99.0
-@js NA
 */
 class CC_DLL CCFlipY : public CCActionInstant
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCFlipY()
         :m_bFlipY(false)
     {}
-    /**
-     *  @js  NA
-     *  @lua NA
-     */
     virtual ~CCFlipY(){}
+    
+    /** create the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCFlipY * actionWithFlipY(bool y);
 
     /** create the action */
     static CCFlipY * create(bool y);
@@ -246,9 +179,6 @@ public:
     //super methods
     virtual void update(float time);
     virtual CCFiniteTimeAction * reverse(void);
-    /**
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone *pZone);
 
 protected:
@@ -260,26 +190,18 @@ protected:
 class CC_DLL CCPlace : public CCActionInstant //<NSCopying>
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCPlace(){}
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCPlace(){}
-
+    /** creates a Place action with a position 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCPlace * actionWithPosition(const CCPoint& pos);
     /** creates a Place action with a position */
     static CCPlace * create(const CCPoint& pos);
     /** Initializes a Place action with a position */
     bool initWithPosition(const CCPoint& pos);
     //super methods
     virtual void update(float time);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone *pZone);
 protected:
     CCPoint m_tPosition;
@@ -290,62 +212,43 @@ protected:
 class CC_DLL CCCallFunc : public CCActionInstant //<NSCopying>
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCCallFunc()
         : m_pSelectorTarget(NULL)
-		, m_nScriptHandler(0)
         , m_pCallFunc(NULL)
     {
     }
-    /**
-     * @js NA
-     * @lua NA
-     */
-    virtual ~CCCallFunc();
+    virtual ~CCCallFunc()
+    {
+        CC_SAFE_RELEASE(m_pSelectorTarget);
+    }
+    /** creates the action with the callback 
+    @deprecated: This interface will be deprecated sooner or later.
+    typedef void (CCObject::*SEL_CallFunc)();
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCCallFunc * actionWithTarget(CCObject* pSelectorTarget, SEL_CallFunc selector);
 
     /** creates the action with the callback 
 
-    * typedef void (CCObject::*SEL_CallFunc)();
-    * @lua NA
+    typedef void (CCObject::*SEL_CallFunc)();
     */
     static CCCallFunc * create(CCObject* pSelectorTarget, SEL_CallFunc selector);
 
-	/** creates the action with the handler script function 
-     * @js NA
-     */
-	static CCCallFunc * create(int nHandler);
-
-	/** initializes the action with the callback 
+    /** initializes the action with the callback 
     
-    * typedef void (CCObject::*SEL_CallFunc)();
-    * @lua NA
+    typedef void (CCObject::*SEL_CallFunc)();
     */
     virtual bool initWithTarget(CCObject* pSelectorTarget);
-    /** executes the callback 
-     * @lua NA
-     */
+    /** executes the callback */
     virtual void execute();
-    /** super methods
-     * @lua NA
-     */
+    //super methods
     virtual void update(float time);
-    /**
-     * @js  NA
-     * @lua NA
-     */
     CCObject * copyWithZone(CCZone *pZone);
-    /**
-     * @lua NA
-     */
+
     inline CCObject* getTargetCallback()
     {
         return m_pSelectorTarget;
     }
-    /**
-     * @lua NA
-     */
+
     inline void setTargetCallback(CCObject* pSel)
     {
         if (pSel != m_pSelectorTarget)
@@ -355,15 +258,10 @@ public:
             m_pSelectorTarget = pSel; 
         }
     }
-    /**
-     * @lua NA
-     */
-    inline int getScriptHandler() { return m_nScriptHandler; };
+
 protected:
     /** Target that will be called */
     CCObject*   m_pSelectorTarget;
-
-	int m_nScriptHandler;
 
     union
     {
@@ -377,70 +275,46 @@ protected:
 /** 
 @brief Calls a 'callback' with the node as the first argument
 N means Node
-* @js NA
 */
-class CC_DLL CCCallFuncN : public CCCallFunc, public TypeInfo
+class CC_DLL CCCallFuncN : public CCCallFunc
 {
 public:
-    /**
-     * @js ctor
-     * @lua NA
-     */
     CCCallFuncN(){}
-    /**
-     * @js  NA
-     * @lua NA
-     */
     virtual ~CCCallFuncN(){}
-    /**
-     * @lua NA
-     */
-    virtual long getClassTypeInfo() {
-		static const long id = cocos2d::getHashCodeByString(typeid(cocos2d::CCCallFunc).name());
-		return id;
-    }
+    /** creates the action with the callback 
+    @deprecated: This interface will be deprecated sooner or later.
+    typedef void (CCObject::*SEL_CallFuncN)(CCNode*);
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCCallFuncN * actionWithTarget(CCObject* pSelectorTarget, SEL_CallFuncN selector);
 
     /** creates the action with the callback 
 
-     * typedef void (CCObject::*SEL_CallFuncN)(CCNode*);
-     * @lua NA
-     */
+    typedef void (CCObject::*SEL_CallFuncN)(CCNode*);
+    */
     static CCCallFuncN * create(CCObject* pSelectorTarget, SEL_CallFuncN selector);
-
-	/** creates the action with the handler script function*/
-	static CCCallFuncN * create(int nHandler);
-
     /** initializes the action with the callback 
 
-     * typedef void (CCObject::*SEL_CallFuncN)(CCNode*);
-     * @lua NA
-     */
+    typedef void (CCObject::*SEL_CallFuncN)(CCNode*);
+    */
     virtual bool initWithTarget(CCObject* pSelectorTarget, SEL_CallFuncN selector);
-    /** super methods
-     * @js  NA
-     * @lua NA
-     */
+    // super methods
     virtual CCObject* copyWithZone(CCZone *pZone);
-    /**
-     * @lua NA
-     */
     virtual void execute();
 };
 
 
 /** 
-* @brief Calls a 'callback' with the node as the first argument and the 2nd argument is data
+@brief Calls a 'callback' with the node as the first argument and the 2nd argument is data
 * ND means: Node and Data. Data is void *, so it could be anything.
-* @js NA
-* @lua NA
 */
 class CC_DLL CCCallFuncND : public CCCallFuncN
 {
 public:
-    virtual long getClassTypeInfo() {
-        static const long id = cocos2d::getHashCodeByString(typeid(cocos2d::CCCallFunc).name());
-		return id;
-    }
+
+    /** creates the action with the callback and the data to pass as an argument 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCCallFuncND * actionWithTarget(CCObject* pSelectorTarget, SEL_CallFuncND selector, void* d);
 
     /** creates the action with the callback and the data to pass as an argument */
     static CCCallFuncND * create(CCObject* pSelectorTarget, SEL_CallFuncND selector, void* d);
@@ -448,10 +322,6 @@ public:
     /** initializes the action with the callback and the data to pass as an argument */
     virtual bool initWithTarget(CCObject* pSelectorTarget, SEL_CallFuncND selector, void* d);
     // super methods
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone *pZone);
     virtual void execute();
 
@@ -464,20 +334,17 @@ protected:
 @brief Calls a 'callback' with an object as the first argument.
 O means Object.
 @since v0.99.5
-@js NA
-@lua NA
 */
-
-class CC_DLL CCCallFuncO : public CCCallFunc, public TypeInfo
+class CC_DLL CCCallFuncO : public CCCallFunc
 {
 public:
     CCCallFuncO();
     virtual ~CCCallFuncO();
-
-    virtual long getClassTypeInfo() {
-	    static const long id = cocos2d::getHashCodeByString(typeid(cocos2d::CCCallFunc).name());
-		return id;
-    }
+    /** creates the action with the callback 
+    @deprecated: This interface will be deprecated sooner or later.
+    typedef void (CCObject::*SEL_CallFuncO)(CCObject*);
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCCallFuncO * actionWithTarget(CCObject* pSelectorTarget, SEL_CallFuncO selector, CCObject* pObject);
 
     /** creates the action with the callback 
 
@@ -491,10 +358,6 @@ public:
     */
     virtual bool initWithTarget(CCObject* pSelectorTarget, SEL_CallFuncO selector, CCObject* pObject);
     // super methods
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone *pZone);
     virtual void execute();
 

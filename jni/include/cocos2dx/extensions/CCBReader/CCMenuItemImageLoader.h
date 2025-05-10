@@ -7,11 +7,8 @@ NS_CC_EXT_BEGIN
 
 /* Forward declaration. */
 class CCBReader;
-/**
- *  @js NA
- *  @lua NA
- */
-class CCMenuItemImageLoader : public CCMenuItemLoader {
+
+class CC_DLL CCMenuItemImageLoader : public CCMenuItemLoader {
     public:
         virtual ~CCMenuItemImageLoader() {};
         CCB_STATIC_NEW_AUTORELEASE_OBJECT_METHOD(CCMenuItemImageLoader, loader);
@@ -19,7 +16,7 @@ class CCMenuItemImageLoader : public CCMenuItemLoader {
     protected:
         CCB_VIRTUAL_NEW_AUTORELEASE_CREATECCNODE_METHOD(CCMenuItemImage);
 
-        virtual void onHandlePropTypeSpriteFrame(CCNode * pNode, CCNode * pParent, const char * pPropertyName, CCSpriteFrame * pCCSpriteFrame, CCBReader * pCCBReader);
+        virtual void onHandlePropTypeSpriteFrame(CCNode * pNode, CCNode * pParent, CCString * pPropertyName, CCSpriteFrame * pCCSpriteFrame, CCBReader * pCCBReader);
 };
 
 NS_CC_EXT_END

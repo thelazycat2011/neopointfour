@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2007      Scott Lembcke
 Copyright (c) 2010      Lam Pham
 
@@ -66,7 +66,7 @@ NS_CC_BEGIN
 static inline CCPoint
 ccpNeg(const CCPoint& v)
 {
-    return -v;
+    return ccp(-v.x, -v.y);
 }
 
 /** Calculates sum of two points.
@@ -76,7 +76,7 @@ ccpNeg(const CCPoint& v)
 static inline CCPoint
 ccpAdd(const CCPoint& v1, const CCPoint& v2)
 {
-    return v1 + v2;
+    return ccp(v1.x + v2.x, v1.y + v2.y);
 }
 
 /** Calculates difference of two points.
@@ -86,7 +86,7 @@ ccpAdd(const CCPoint& v1, const CCPoint& v2)
 static inline CCPoint
 ccpSub(const CCPoint& v1, const CCPoint& v2)
 {
-    return v1 - v2;
+    return ccp(v1.x - v2.x, v1.y - v2.y);
 }
 
 /** Returns point multiplied by given factor.
@@ -94,9 +94,9 @@ ccpSub(const CCPoint& v1, const CCPoint& v2)
  @since v0.7.2
  */
 static inline CCPoint
-ccpMult(const CCPoint& v, const float s)
+ccpMult(const CCPoint& v, const CCFloat s)
 {
-    return v * s;
+    return ccp(v.x*s, v.y*s);
 }
 
 /** Calculates midpoint between two points.
@@ -106,27 +106,27 @@ ccpMult(const CCPoint& v, const float s)
 static inline CCPoint
 ccpMidpoint(const CCPoint& v1, const CCPoint& v2)
 {
-    return (v1 + v2) / 2.f;
+    return ccpMult(ccpAdd(v1, v2), 0.5f);
 }
 
 /** Calculates dot product of two points.
- @return float
+ @return CCFloat
  @since v0.7.2
  */
-static inline float
+static inline CCFloat
 ccpDot(const CCPoint& v1, const CCPoint& v2)
 {
-    return v1.dot(v2);
+    return v1.x*v2.x + v1.y*v2.y;
 }
 
 /** Calculates cross product of two points.
- @return float
+ @return CCFloat
  @since v0.7.2
  */
-static inline float
+static inline CCFloat
 ccpCross(const CCPoint& v1, const CCPoint& v2)
 {
-    return v1.cross(v2);
+    return v1.x*v2.y - v1.y*v2.x;
 }
 
 /** Calculates perpendicular of v, rotated 90 degrees counter-clockwise -- cross(v, perp(v)) >= 0
@@ -136,7 +136,7 @@ ccpCross(const CCPoint& v1, const CCPoint& v2)
 static inline CCPoint
 ccpPerp(const CCPoint& v)
 {
-    return v.getPerp();
+    return ccp(-v.y, v.x);
 }
 
 /** Calculates perpendicular of v, rotated 90 degrees clockwise -- cross(v, rperp(v)) <= 0
@@ -146,7 +146,7 @@ ccpPerp(const CCPoint& v)
 static inline CCPoint
 ccpRPerp(const CCPoint& v)
 {
-    return v.getRPerp();
+    return ccp(v.y, -v.x);
 }
 
 /** Calculates the projection of v1 over v2.
@@ -156,7 +156,7 @@ ccpRPerp(const CCPoint& v)
 static inline CCPoint
 ccpProject(const CCPoint& v1, const CCPoint& v2)
 {
-    return v1.project(v2);
+    return ccpMult(v2, ccpDot(v1, v2)/ccpDot(v2, v2));
 }
 
 /** Rotates two points.
@@ -166,7 +166,7 @@ ccpProject(const CCPoint& v1, const CCPoint& v2)
 static inline CCPoint
 ccpRotate(const CCPoint& v1, const CCPoint& v2)
 {
-    return v1.rotate(v2);
+    return ccp(v1.x*v2.x - v1.y*v2.y, v1.x*v2.y + v1.y*v2.x);
 }
 
 /** Unrotates two points.
@@ -176,42 +176,42 @@ ccpRotate(const CCPoint& v1, const CCPoint& v2)
 static inline CCPoint
 ccpUnrotate(const CCPoint& v1, const CCPoint& v2)
 {
-    return v1.unrotate(v2);
+    return ccp(v1.x*v2.x + v1.y*v2.y, v1.y*v2.x - v1.x*v2.y);
 }
 
 /** Calculates the square length of a CCPoint (not calling sqrt() )
- @return float
+ @return CCFloat
  @since v0.7.2
  */
-static inline float
+static inline CCFloat
 ccpLengthSQ(const CCPoint& v)
 {
-    return v.getLengthSq();
+    return ccpDot(v, v);
 }
 
 
 /** Calculates the square distance between two points (not calling sqrt() )
- @return float
+ @return CCFloat
  @since v1.1
 */
-static inline float
+static inline CCFloat
 ccpDistanceSQ(const CCPoint p1, const CCPoint p2)
 {
-    return (p1 - p2).getLengthSq();
+    return ccpLengthSQ(ccpSub(p1, p2));
 }
 
 
 /** Calculates distance between point an origin
- @return float
+ @return CCFloat
  @since v0.7.2
  */
-float CC_DLL ccpLength(const CCPoint& v);
+CCFloat CC_DLL ccpLength(const CCPoint& v);
 
 /** Calculates the distance between two points
- @return float
+ @return CCFloat
  @since v0.7.2
  */
-float CC_DLL ccpDistance(const CCPoint& v1, const CCPoint& v2);
+CCFloat CC_DLL ccpDistance(const CCPoint& v1, const CCPoint& v2);
 
 /** Returns point multiplied to a length of 1.
  @return CCPoint
@@ -223,13 +223,13 @@ CCPoint CC_DLL ccpNormalize(const CCPoint& v);
  @return CCPoint
  @since v0.7.2
  */
-CCPoint CC_DLL ccpForAngle(const float a);
+CCPoint CC_DLL ccpForAngle(const CCFloat a);
 
 /** Converts a vector to radians.
- @return float
+ @return CCFloat
  @since v0.7.2
  */
-float CC_DLL ccpToAngle(const CCPoint& v);
+CCFloat CC_DLL ccpToAngle(const CCPoint& v);
 
 
 /** Clamp a value between from and to.
@@ -272,7 +272,7 @@ CCPoint CC_DLL ccpLerp(const CCPoint& a, const CCPoint& b, float alpha);
 bool CC_DLL ccpFuzzyEqual(const CCPoint& a, const CCPoint& b, float variance);
 
 
-/** Multiplies a and b components, a.x*b.x, a.y*b.y
+/** Multiplies a nd b components, a.x*b.x, a.y*b.y
  @returns a component-wise multiplication
  @since v0.99.1
  */

@@ -35,7 +35,7 @@ extern "C" {
 #endif
 
 /**
- * A structure that represents an axis-aligned
+ * A struture that represents an axis-aligned
  * bounding box.
  */
 typedef struct kmAABB {

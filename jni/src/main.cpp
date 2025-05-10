@@ -1,6 +1,10 @@
 #include "includes.h"
 #define cpatch(addr, val) addPatch("libgame.so", addr, val)
 
+const char* name_for_node(CCNode* node) {
+	return typeid(*node).name();
+}
+
 char * (*LevelTools_getAudioTitle)(int ID);
 char * LevelTools_getAudioTitle_H(int ID) {
   switch (ID) {
@@ -164,12 +168,90 @@ char * LevelTools_nameForArtist_H(int ID) {
   }
 }
 
+#define MAGIC_TEXTURE "thelazycat/GJ_epicCoin_001.png"
+#define FEATURED_TEXTURE "thelazycat/GJ_featuredCoin_001.png"
+
+class GJGameLevel : public CCNode {
+  
+};
+
+class LevelCell : public CCLayer {
+  
+};
+
+// Credit to akqanile for the same code on 1.3 GDPS
+std::map<GJGameLevel*, int> feature_type_map;
+
+void (*GJGameLevel_encodeWithCoder)(GJGameLevel* self, DS_Dictionary* dsd);
+void GJGameLevel_encodeWithCoder_H(GJGameLevel* self, DS_Dictionary* dsd) {
+  GJGameLevel_encodeWithCoder(self, dsd);
+  dsd->setIntegerForKey("thelazycat_featureType", feature_type_map[self]);
+}
+
+GJGameLevel* (*GJGameLevel_createWithCoder)(DS_Dictionary* dsd);
+GJGameLevel* GJGameLevel_createWithCoder_H(DS_Dictionary* dsd) {
+  auto lvl = GJGameLevel_createWithCoder(dsd);
+  feature_type_map[lvl] = dsd->getIntegerForKey("thelazycat_featureType");
+  return lvl;
+}
+
+GJGameLevel* (*GJGameLevel_create)(CCDictionary* dict);
+GJGameLevel* GJGameLevel_create_H(CCDictionary* dict) {
+  auto lvl = GJGameLevel_create(dict);
+  if (dict->valueForKey("42")->intValue() > 0) feature_type_map[lvl] = 2;
+  else if (dict->valueForKey("19")->intValue() > 0) feature_type_map[lvl] = 1;
+  else feature_type_map[lvl] = 0;
+  return lvl;
+}
+
+void (*GJGameLevel_destructor)(GJGameLevel*);
+void GJGameLevel_destructor_H(GJGameLevel* self) {
+  auto val = feature_type_map.find(self);
+  if (val != feature_type_map.end()) feature_type_map.erase(val);
+  GJGameLevel_destructor(self);
+}
+
+void (*LevelCell_loadCustomLevelCell)(LevelCell*);
+void LevelCell_loadCustomLevelCell_H(LevelCell* self) {
+  LevelCell_loadCustomLevelCell(self);
+  auto lvl = from<GJGameLevel*>(self, 0x180);
+  auto val = feature_type_map[lvl];
+  if (val == 0) return;
+  CCSprite* featureFrame = CCSprite::create((val == 2) ? MAGIC_TEXTURE : FEATURED_TEXTURE);
+  featureFrame->setPosition({26.f, 40.f});
+  if (from<int>(lvl, 0x180) == 0) featureFrame->setPosition({26.f, 35.f}); // Featured no stars
+  featureFrame->_setZOrder(-1);
+  self->addChild(featureFrame);
+}
+
+bool (*LevelInfoLayer_init)(CCLayer* self, GJGameLevel* lvl);
+bool LevelInfoLayer_init_H(CCLayer* self, GJGameLevel* lvl) {
+  if (!LevelInfoLayer_init(self, lvl)) return false;
+  // GJGameLevel* lvl = from<GJGameLevel*>(self, 0x154);
+  auto win_size = CCDirector::sharedDirector()->getWinSize();
+  auto val = feature_type_map[lvl];
+  if (val == 0) return true;
+  CCSprite* featureFrame = CCSprite::create((val == 2) ? MAGIC_TEXTURE : FEATURED_TEXTURE);
+  featureFrame->setPosition({(win_size.width / 2) - 120, (win_size.height / 2) + 35});
+  featureFrame->_setZOrder(-1);
+  self->addChild(featureFrame);
+  return true;
+}
+
 void ApplyHooks() {
 	HOOK("_ZN10LevelTools13getAudioTitleEi", LevelTools_getAudioTitle_H, LevelTools_getAudioTitle);
   HOOK("_ZN10LevelTools16getAudioFileNameEi", LevelTools_getAudioFilename_H, LevelTools_getAudioFilename);
   HOOK("_ZN10LevelTools14artistForAudioEi", LevelTools_artistForAudio_H, LevelTools_artistForAudio);
   HOOK("_ZN10LevelTools14getAudioStringEi", LevelTools_getAudioString_H, LevelTools_getAudioString);
   HOOK("_ZN10LevelTools13nameForArtistEi", LevelTools_nameForArtist_H, LevelTools_nameForArtist);
+
+  // Feature Ring
+  HOOK("_ZN9LevelCell19loadCustomLevelCellEv", LevelCell_loadCustomLevelCell_H, LevelCell_loadCustomLevelCell);
+  HOOK("_ZN14LevelInfoLayer4initEP11GJGameLevel", LevelInfoLayer_init_H, LevelInfoLayer_init);
+  HOOK("_ZN11GJGameLevel6createEPN7cocos2d12CCDictionaryE", GJGameLevel_create_H, GJGameLevel_create);
+  HOOK("_ZN11GJGameLevel15encodeWithCoderEP13DS_Dictionary", GJGameLevel_encodeWithCoder_H, GJGameLevel_encodeWithCoder);
+  HOOK("_ZN11GJGameLevel15createWithCoderEP13DS_Dictionary", GJGameLevel_createWithCoder_H, GJGameLevel_createWithCoder);
+  HOOK("_ZN11GJGameLevelD1Ev", GJGameLevel_destructor_H, GJGameLevel_destructor);
 }
 
 //this is where your starting patches should be

@@ -30,9 +30,6 @@ THE SOFTWARE.
 #include "cocoa/CCObject.h"
 #include "cocoa/CCGeometry.h"
 #include "ccTypes.h"
-#ifdef EMSCRIPTEN
-#include "base_nodes/CCGLBufferedNode.h"
-#endif // EMSCRIPTEN
 
 NS_CC_BEGIN
 
@@ -71,7 +68,6 @@ typedef enum {
     //! 2-bit PVRTC-compressed texture: PVRTC2
     kCCTexture2DPixelFormat_PVRTC2,
 
-
     //! Default texture format: RGBA8888
     kCCTexture2DPixelFormat_Default = kCCTexture2DPixelFormat_RGBA8888,
 
@@ -107,39 +103,18 @@ typedef struct _ccTexParams {
 * Be aware that the content of the generated textures will be upside-down!
 */
 class CC_DLL CCTexture2D : public CCObject
-#ifdef EMSCRIPTEN
-, public CCGLBufferedNode
-#endif // EMSCRIPTEN
 {
 public:
-    /**
-     * @js ctor
-     */
     CCTexture2D();
-    /**
-     * @js NA
-     * @lua NA
-     */
     virtual ~CCTexture2D();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+
     const char* description(void);
 
-    /** These functions are needed to create mutable textures 
-     * @js NA
-     */
+    /** These functions are needed to create mutable textures */
     void releaseData(void *data);
-    /**
-     * @js NA
-     */
     void* keepData(void *data, unsigned int length);
 
-    /** Initializes with a texture2d with data 
-     * @js NA
-     * @lua NA
-     */
+    /** Intializes with a texture2d with data */
     bool initWithData(const void* data, CCTexture2DPixelFormat pixelFormat, unsigned int pixelsWide, unsigned int pixelsHigh, const CCSize& contentSize);
 
     /**
@@ -159,18 +134,24 @@ public:
 
     bool initWithImage(CCImage * uiImage);
 
+    bool initWithImage(CCImage *uiImage, ccResolutionType resolution);
+
     /** Initializes a texture from a string with dimensions, alignment, font name and font size */
-    bool initWithString(const char *text,  const char *fontName, float fontSize, const CCSize& dimensions, CCTextAlignment hAlignment, CCVerticalTextAlignment vAlignment);
+    bool initWithString(const char *text, const CCSize& dimensions, CCTextAlignment hAlignment, CCVerticalTextAlignment vAlignment, const char *fontName, float fontSize);
     /** Initializes a texture from a string with font name and font size */
     bool initWithString(const char *text, const char *fontName, float fontSize);
-    /** Initializes a texture from a string using a text definition*/
-    bool initWithString(const char *text, ccFontDefinition *textDefinition);
+
+#ifdef CC_SUPPORT_PVRTC    
+    /**
+    Extensions to make it easy to create a CCTexture2D object from a PVRTC file
+    Note that the generated textures don't have their alpha premultiplied - use the blending mode (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA).
+    */
+    /** Initializes a texture from a PVRTC buffer */
+    bool initWithPVRTCData(const void *data, int level, int bpp, bool hasAlpha, int length, CCTexture2DPixelFormat pixelFormat);
+#endif // CC_SUPPORT_PVRTC
     
     /** Initializes a texture from a PVR file */
     bool initWithPVRFile(const char* file);
-    
-    /** Initializes a texture from a ETC file */
-    bool initWithETCFile(const char* file);
 
     /** sets the min filter, mag filter, wrap s and wrap t texture parameters.
     If the texture size is NPOT (non power of 2), then in can only use GL_CLAMP_TO_EDGE in GL_TEXTURE_WRAP_{S,T}.
@@ -178,10 +159,6 @@ public:
     @warning Calling this method could allocate additional texture memory.
 
     @since v0.8
-    @code
-    when this functon bound to js,the input param are changed
-    js: var setTexParameters(var minFilter, var magFilter, var wrapS, var wrapT)
-    @endcode
     */
     void setTexParameters(ccTexParams* texParams);
 
@@ -248,7 +225,6 @@ public:
 
     /** returns the alpha pixel format
     @since v0.8
-    @js getDefaultAlphaPixelFormat
     */
     static CCTexture2DPixelFormat defaultAlphaPixelFormat();
 
@@ -267,9 +243,6 @@ public:
     
     bool hasPremultipliedAlpha();
     bool hasMipmaps();
-
-    //Robtop Modification:
-    void releaseGLTexture(void);
 private:
     bool initPremultipliedATextureWithImage(CCImage * image, unsigned int pixelsWide, unsigned int pixelsHigh);
     
@@ -280,7 +253,7 @@ private:
     CC_PROPERTY_READONLY(CCTexture2DPixelFormat, m_ePixelFormat, PixelFormat)
     /** width in pixels */
     CC_PROPERTY_READONLY(unsigned int, m_uPixelsWide, PixelsWide)
-    /** height in pixels */
+    /** hight in pixels */
     CC_PROPERTY_READONLY(unsigned int, m_uPixelsHigh, PixelsHigh)
 
     /** texture name */
@@ -300,6 +273,17 @@ private:
 
     /** shader program used by drawAtPoint and drawInRect */
     CC_PROPERTY(CCGLProgram*, m_pShaderProgram, ShaderProgram);
+
+
+    /** Returns the resolution type of the texture.
+     Is it a RetinaDisplay texture, an iPad texture or an standard texture ?
+     Only valid on iOS. Not valid on OS X.
+
+     Should be a readonly property. It is readwrite as a hack.
+
+     @since v1.1
+     */
+    CC_SYNTHESIZE(ccResolutionType, m_eResolutionType, ResolutionType);
 };
 
 // end of textures group

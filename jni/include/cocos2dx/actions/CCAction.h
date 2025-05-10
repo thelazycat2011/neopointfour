@@ -49,24 +49,11 @@ enum {
 class CC_DLL CCAction : public CCObject 
 {
 public:
-    /**
-     * @js ctor
-     */
     CCAction(void);
-    /**
-     * @js NA
-     * @lua NA
-     */
     virtual ~CCAction(void);
-    /**
-     * @js NA
-     * @lua NA
-     */
+
     const char* description();
-    /**
-     * @js NA
-     * @lua NA
-     */
+
     virtual CCObject* copyWithZone(CCZone *pZone);
 
     //! return true if the action has finished
@@ -110,6 +97,11 @@ public:
     inline void setTag(int nTag) { m_nTag = nTag; }
 
 public:
+    /** Allocates and initializes the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCAction* action();
+
     /** Create an action */
     static CCAction* create();
 protected:
@@ -136,16 +128,9 @@ protected:
 class CC_DLL CCFiniteTimeAction : public CCAction
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCFiniteTimeAction()
         : m_fDuration(0)
     {}
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCFiniteTimeAction(){}
     //! get duration in seconds of the action
     inline float getDuration(void) { return m_fDuration; }
@@ -171,17 +156,10 @@ class CCRepeatForever;
 class CC_DLL CCSpeed : public CCAction
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCSpeed()
         : m_fSpeed(0.0)
         , m_pInnerAction(NULL)
     {}
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCSpeed(void);
 
     inline float getSpeed(void) { return m_fSpeed; }
@@ -190,10 +168,7 @@ public:
 
     /** initializes the action */
     bool initWithAction(CCActionInterval *pAction, float fSpeed);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+
     virtual CCObject* copyWithZone(CCZone *pZone);
     virtual void startWithTarget(CCNode* pTarget);
     virtual void stop();
@@ -209,6 +184,11 @@ public:
     }
 
 public:
+    /** creates the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCSpeed* actionWithAction(CCActionInterval *pAction, float fSpeed);
+    
     /** create the action */
     static CCSpeed* create(CCActionInterval* pAction, float fSpeed);
 protected:
@@ -228,9 +208,6 @@ Instead of using CCCamera as a "follower", use this action instead.
 class CC_DLL CCFollow : public CCAction
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCFollow()
         : m_pobFollowedNode(NULL)
         , m_bBoundarySet(false)
@@ -240,10 +217,6 @@ public:
         , m_fTopBoundary(0.0)
         , m_fBottomBoundary(0.0)
     {}
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCFollow(void);
     
     inline bool isBoundarySet(void) { return m_bBoundarySet; }
@@ -252,16 +225,18 @@ public:
 
     /** initializes the action with a set boundary */
     bool initWithTarget(CCNode *pFollowedNode, const CCRect& rect = CCRectZero);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+
     virtual CCObject* copyWithZone(CCZone *pZone);
     virtual void step(float dt);
     virtual bool isDone(void);
     virtual void stop(void);
 
 public:
+    /** creates the action with a set boundary,
+        It will work with no boundary if @param rect is equal to CCRectZero.
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCFollow* actionWithTarget(CCNode *pFollowedNode, const CCRect& rect = CCRectZero);
     /** creates the action with a set boundary,
     It will work with no boundary if @param rect is equal to CCRectZero.
     */

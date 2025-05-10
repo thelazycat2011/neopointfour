@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2008-2010 Ricardo Quesada
 Copyright (c) 2011      Zynga Inc.
 
@@ -41,6 +41,32 @@ NS_CC_BEGIN
 //c/c++ don't support object creation of using class name
 //so, all classes need creation method.
 
+#define OLD_TRANSITION_CREATE_FUNC(_Type)                           \
+    CC_DEPRECATED_ATTRIBUTE static _Type* transitionWithDuration(float t, CCScene* scene)   \
+    {                                                               \
+        _Type* pScene = new _Type();                                \
+        if(pScene && pScene->initWithDuration(t, scene))            \
+        {                                                           \
+            pScene->autorelease();                                  \
+            return pScene;                                          \
+        }                                                           \
+        CC_SAFE_DELETE(pScene);                                     \
+        return NULL;                                                \
+    }
+
+#define TRANSITION_CREATE_FUNC(_Type)                               \
+    static _Type* create(float t, CCScene* scene)                   \
+    {                                                               \
+        _Type* pScene = new _Type();                                \
+        if(pScene && pScene->initWithDuration(t, scene))            \
+        {                                                           \
+            pScene->autorelease();                                  \
+            return pScene;                                          \
+        }                                                           \
+        CC_SAFE_DELETE(pScene);                                     \
+        return NULL;                                                \
+    }
+
 class CCActionInterval;
 class CCNode;
 
@@ -60,19 +86,13 @@ public:
 */
 typedef enum {
     /// An horizontal orientation where the Left is nearer
-	kCCTransitionOrientationLeftOver = 0,
-	/// An horizontal orientation where the Right is nearer
-	kCCTransitionOrientationRightOver = 1,
-	/// A vertical orientation where the Up is nearer
-	kCCTransitionOrientationUpOver = 0,
-	/// A vertical orientation where the Bottom is nearer
-	kCCTransitionOrientationDownOver = 1,
-    
-	// Deprecated
-    //	kOrientationLeftOver = kCCTransitionOrientationLeftOver,
-    //	kOrientationRightOver = kCCTransitionOrientationRightOver,
-    //	kOrientationUpOver = kCCTransitionOrientationUpOver,
-    //	kOrientationDownOver = kCCTransitionOrientationDownOver,
+    kOrientationLeftOver = 0,
+    /// An horizontal orientation where the Right is nearer
+    kOrientationRightOver = 1,
+    /// A vertical orientation where the Up is nearer
+    kOrientationUpOver = 0,
+    /// A vertical orientation where the Bottom is nearer
+    kOrientationDownOver = 1,
 } tOrientation;
 
 /** @brief Base class for CCTransition scenes
@@ -88,27 +108,18 @@ protected:
     bool    m_bIsSendCleanupToScene;
 
 public:
-    /**
-     *  @js ctor
-     */
+
     CCTransitionScene();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionScene();
     virtual void draw();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual void onEnter();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual void onExit();
     virtual void cleanup();
+
+    /** creates a base transition with duration and incoming scene
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCTransitionScene * transitionWithDuration(float t, CCScene *scene);
 
     /** creates a base transition with duration and incoming scene */
     static CCTransitionScene * create(float t, CCScene *scene);
@@ -119,7 +130,7 @@ public:
     /** called after the transition finishes */
     void finish(void);
 
-    /** used by some transitions to hide the outer scene */
+    /** used by some transitions to hide the outter scene */
     void hideOutShowIn(void);
 
 protected:
@@ -138,15 +149,13 @@ protected:
     tOrientation m_eOrientation;
 
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionSceneOriented();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionSceneOriented();
+
+    /** creates a base transition with duration and incoming scene 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCTransitionSceneOriented * transitionWithDuration(float t,CCScene* scene, tOrientation orientation);
 
     /** creates a base transition with duration and incoming scene */
     static CCTransitionSceneOriented * create(float t,CCScene* scene, tOrientation orientation);
@@ -161,22 +170,12 @@ Rotate and zoom out the outgoing scene, and then rotate and zoom in the incoming
 class CC_DLL CCTransitionRotoZoom : public CCTransitionScene
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionRotoZoom();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionRotoZoom();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual void onEnter();
 
-    static CCTransitionRotoZoom* create(float t, CCScene* scene);
+    TRANSITION_CREATE_FUNC(CCTransitionRotoZoom);
+    OLD_TRANSITION_CREATE_FUNC(CCTransitionRotoZoom);
 };
 
 /** @brief CCTransitionJumpZoom:
@@ -185,22 +184,12 @@ Zoom out and jump the outgoing scene, and then jump and zoom in the incoming
 class CC_DLL CCTransitionJumpZoom : public CCTransitionScene
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionJumpZoom();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionJumpZoom();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual void onEnter();
 
-    static CCTransitionJumpZoom* create(float t, CCScene* scene);
+    TRANSITION_CREATE_FUNC(CCTransitionJumpZoom);
+    OLD_TRANSITION_CREATE_FUNC(CCTransitionJumpZoom);
 };
 
 /** @brief CCTransitionMoveInL:
@@ -209,14 +198,7 @@ Move in from to the left the incoming scene.
 class CC_DLL CCTransitionMoveInL : public CCTransitionScene, public CCTransitionEaseScene
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionMoveInL();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionMoveInL();
     /** initializes the scenes */
     virtual void initScenes(void);
@@ -224,13 +206,11 @@ public:
     virtual CCActionInterval* action(void);
 
     virtual CCActionInterval* easeActionWithAction(CCActionInterval * action);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+
     virtual void onEnter();
 
-    static CCTransitionMoveInL* create(float t, CCScene* scene);
+    TRANSITION_CREATE_FUNC(CCTransitionMoveInL);
+    OLD_TRANSITION_CREATE_FUNC(CCTransitionMoveInL);
 };
 
 /** @brief CCTransitionMoveInR:
@@ -239,18 +219,12 @@ Move in from to the right the incoming scene.
 class CC_DLL CCTransitionMoveInR : public CCTransitionMoveInL
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionMoveInR();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionMoveInR();
     virtual void initScenes();
 
-    static CCTransitionMoveInR* create(float t, CCScene* scene);
+    TRANSITION_CREATE_FUNC(CCTransitionMoveInR);
+    OLD_TRANSITION_CREATE_FUNC(CCTransitionMoveInR);
 };
 
 /** @brief CCTransitionMoveInT:
@@ -259,18 +233,12 @@ Move in from to the top the incoming scene.
 class CC_DLL CCTransitionMoveInT : public CCTransitionMoveInL 
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionMoveInT();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionMoveInT();
     virtual void initScenes();
 
-    static CCTransitionMoveInT* create(float t, CCScene* scene);
+    TRANSITION_CREATE_FUNC(CCTransitionMoveInT);
+    OLD_TRANSITION_CREATE_FUNC(CCTransitionMoveInT);
 };
 
 /** @brief CCTransitionMoveInB:
@@ -279,18 +247,12 @@ Move in from to the bottom the incoming scene.
 class CC_DLL CCTransitionMoveInB : public CCTransitionMoveInL
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionMoveInB();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionMoveInB();
     virtual void initScenes();
 
-    static CCTransitionMoveInB* create(float t, CCScene* scene);
+    TRANSITION_CREATE_FUNC(CCTransitionMoveInB);
+    OLD_TRANSITION_CREATE_FUNC(CCTransitionMoveInB);
 };
 
 /** @brief CCTransitionSlideInL:
@@ -299,29 +261,20 @@ Slide in the incoming scene from the left border.
 class CC_DLL CCTransitionSlideInL : public CCTransitionScene, public CCTransitionEaseScene
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionSlideInL();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionSlideInL();
 
     /** initializes the scenes */
     virtual void initScenes(void);
-    /** returns the action that will be performed by the incoming and outgoing scene */
+    /** returns the action that will be performed by the incomming and outgoing scene */
     virtual CCActionInterval* action(void);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+
     virtual void onEnter();
     
     virtual CCActionInterval* easeActionWithAction(CCActionInterval * action);
 
-    static CCTransitionSlideInL* create(float t, CCScene* scene);
+    TRANSITION_CREATE_FUNC(CCTransitionSlideInL);
+    OLD_TRANSITION_CREATE_FUNC(CCTransitionSlideInL);
 protected:
     virtual void sceneOrder();
 };
@@ -332,22 +285,16 @@ Slide in the incoming scene from the right border.
 class CC_DLL CCTransitionSlideInR : public CCTransitionSlideInL 
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionSlideInR();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionSlideInR();
 
     /** initializes the scenes */
     virtual void initScenes(void);
-    /** returns the action that will be performed by the incoming and outgoing scene */
+    /** returns the action that will be performed by the incomming and outgoing scene */
     virtual CCActionInterval* action(void);
 
-    static CCTransitionSlideInR* create(float t, CCScene* scene);
+    TRANSITION_CREATE_FUNC(CCTransitionSlideInR);
+    OLD_TRANSITION_CREATE_FUNC(CCTransitionSlideInR);
 protected:
     virtual void sceneOrder();
 };
@@ -358,22 +305,16 @@ Slide in the incoming scene from the bottom border.
 class CC_DLL CCTransitionSlideInB : public CCTransitionSlideInL
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionSlideInB();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionSlideInB();
 
     /** initializes the scenes */
     virtual void initScenes(void);
-    /** returns the action that will be performed by the incoming and outgoing scene */
+    /** returns the action that will be performed by the incomming and outgoing scene */
     virtual CCActionInterval* action(void);
 
-    static CCTransitionSlideInB* create(float t, CCScene* scene);
+    TRANSITION_CREATE_FUNC(CCTransitionSlideInB);
+    OLD_TRANSITION_CREATE_FUNC(CCTransitionSlideInB);
 protected: 
     virtual void sceneOrder();
 };
@@ -384,22 +325,16 @@ Slide in the incoming scene from the top border.
 class CC_DLL CCTransitionSlideInT : public CCTransitionSlideInL
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionSlideInT();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionSlideInT();
 
     /** initializes the scenes */
     virtual void initScenes(void);
-    /** returns the action that will be performed by the incoming and outgoing scene */
+    /** returns the action that will be performed by the incomming and outgoing scene */
     virtual CCActionInterval* action(void);
 
-    static CCTransitionSlideInT* create(float t, CCScene* scene);
+    TRANSITION_CREATE_FUNC(CCTransitionSlideInT);
+    OLD_TRANSITION_CREATE_FUNC(CCTransitionSlideInT);
 protected:
     virtual void sceneOrder();
 };
@@ -410,23 +345,14 @@ protected:
 class CC_DLL CCTransitionShrinkGrow : public CCTransitionScene , public CCTransitionEaseScene
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionShrinkGrow();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionShrinkGrow();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+
     virtual void onEnter();
     virtual CCActionInterval* easeActionWithAction(CCActionInterval * action);
 
-    static CCTransitionShrinkGrow* create(float t, CCScene* scene);
+    TRANSITION_CREATE_FUNC(CCTransitionShrinkGrow);
+    OLD_TRANSITION_CREATE_FUNC(CCTransitionShrinkGrow);
 };
 
 /** @brief CCTransitionFlipX:
@@ -436,23 +362,14 @@ The front face is the outgoing scene and the back face is the incoming scene.
 class CC_DLL CCTransitionFlipX : public CCTransitionSceneOriented
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionFlipX();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionFlipX();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+
     virtual void onEnter();
 
-    static CCTransitionFlipX* create(float t, CCScene* s, tOrientation o);
-    static CCTransitionFlipX* create(float t, CCScene* s);
+    // @deprecated: This interface will be deprecated sooner or later.
+    CC_DEPRECATED_ATTRIBUTE static CCTransitionFlipX* transitionWithDuration(float t, CCScene* s, tOrientation o = kOrientationRightOver);
+    static CCTransitionFlipX* create(float t, CCScene* s, tOrientation o = kOrientationRightOver);
 };
 
 /** @brief CCTransitionFlipY:
@@ -462,23 +379,14 @@ The front face is the outgoing scene and the back face is the incoming scene.
 class CC_DLL CCTransitionFlipY : public CCTransitionSceneOriented
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionFlipY();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionFlipY();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+
     virtual void onEnter();
 
-    static CCTransitionFlipY* create(float t, CCScene* s, tOrientation o);
-    static CCTransitionFlipY* create(float t, CCScene* s);
+    //@deprecated: This interface will be deprecated sooner or later.
+    CC_DEPRECATED_ATTRIBUTE static CCTransitionFlipY* transitionWithDuration(float t, CCScene* s, tOrientation o = kOrientationUpOver);
+    static CCTransitionFlipY* create(float t, CCScene* s, tOrientation o = kOrientationUpOver);
 };
 
 /** @brief CCTransitionFlipAngular:
@@ -488,23 +396,14 @@ The front face is the outgoing scene and the back face is the incoming scene.
 class CC_DLL CCTransitionFlipAngular : public CCTransitionSceneOriented
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionFlipAngular();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionFlipAngular();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+
     virtual void onEnter();
-    
-    static CCTransitionFlipAngular* create(float t, CCScene* s, tOrientation o);
-    static CCTransitionFlipAngular* create(float t, CCScene* s);
+
+    //@deprecated: This interface will be deprecated sooner or later.
+    CC_DEPRECATED_ATTRIBUTE static CCTransitionFlipAngular* transitionWithDuration(float t, CCScene* s, tOrientation o = kOrientationRightOver);
+    static CCTransitionFlipAngular* create(float t, CCScene* s, tOrientation o = kOrientationRightOver);
 };
 
 /** @brief CCTransitionZoomFlipX:
@@ -514,23 +413,14 @@ The front face is the outgoing scene and the back face is the incoming scene.
 class CC_DLL CCTransitionZoomFlipX : public CCTransitionSceneOriented
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionZoomFlipX();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionZoomFlipX();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+
     virtual void onEnter();
 
-    static CCTransitionZoomFlipX* create(float t, CCScene* s, tOrientation o);
-    static CCTransitionZoomFlipX* create(float t, CCScene* s);
+    //@deprecated: This interface will be deprecated sooner or later.
+    CC_DEPRECATED_ATTRIBUTE static CCTransitionZoomFlipX* transitionWithDuration(float t, CCScene* s, tOrientation o = kOrientationRightOver);
+    static CCTransitionZoomFlipX* create(float t, CCScene* s, tOrientation o = kOrientationRightOver);
 };
 
 /** @brief CCTransitionZoomFlipY:
@@ -540,23 +430,14 @@ The front face is the outgoing scene and the back face is the incoming scene.
 class CC_DLL CCTransitionZoomFlipY : public CCTransitionSceneOriented
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionZoomFlipY();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionZoomFlipY();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+
     virtual void onEnter();
 
-    static CCTransitionZoomFlipY* create(float t, CCScene* s, tOrientation o);
-    static CCTransitionZoomFlipY* create(float t, CCScene* s);
+    //@deprecated: This interface will be deprecated sooner or later.
+    CC_DEPRECATED_ATTRIBUTE static CCTransitionZoomFlipY* transitionWithDuration(float t, CCScene* s, tOrientation o = kOrientationUpOver);
+    static CCTransitionZoomFlipY* create(float t, CCScene* s, tOrientation o = kOrientationUpOver);
 };
 
 /** @brief CCTransitionZoomFlipAngular:
@@ -566,23 +447,14 @@ The front face is the outgoing scene and the back face is the incoming scene.
 class CC_DLL CCTransitionZoomFlipAngular : public CCTransitionSceneOriented
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionZoomFlipAngular();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionZoomFlipAngular();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+
     virtual void onEnter();
 
-    static CCTransitionZoomFlipAngular* create(float t, CCScene* s, tOrientation o);
-    static CCTransitionZoomFlipAngular* create(float t, CCScene* s);
+    //@deprecated: This interface will be deprecated sooner or later.
+    CC_DEPRECATED_ATTRIBUTE static CCTransitionZoomFlipAngular* transitionWithDuration(float t, CCScene* s, tOrientation o = kOrientationRightOver);
+    static CCTransitionZoomFlipAngular* create(float t, CCScene* s, tOrientation o = kOrientationRightOver);
 };
 
 /** @brief CCTransitionFade:
@@ -594,35 +466,26 @@ protected:
     ccColor4B    m_tColor;
 
 public:
-    /**
-     *  @js ctor
-     */
+
     CCTransitionFade();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionFade();
-    
+
     /** creates the transition with a duration and with an RGB color
+    * Example: FadeTransition::transitionWithDuration(2, scene, ccc3(255,0,0); // red color
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCTransitionFade* transitionWithDuration(float duration,CCScene* scene, const ccColor3B& color = ccBLACK);
+    
+        /** creates the transition with a duration and with an RGB color
     * Example: FadeTransition::create(2, scene, ccc3(255,0,0); // red color
     */
-    static CCTransitionFade* create(float duration,CCScene* scene, const ccColor3B& color);
-    static CCTransitionFade* create(float duration,CCScene* scene);
+    static CCTransitionFade* create(float duration,CCScene* scene, const ccColor3B& color = ccBLACK);
 
     /** initializes the transition with a duration and with an RGB color */
     virtual bool initWithDuration(float t, CCScene*scene ,const ccColor3B& color);
 
-    virtual bool initWithDuration(float t,CCScene* scene);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+    virtual bool initWithDuration(float t,CCScene* scene); 
     virtual void onEnter();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual void onExit();
 };
 
@@ -634,30 +497,16 @@ Cross fades two scenes using the CCRenderTexture object.
 class CC_DLL CCTransitionCrossFade : public CCTransitionScene
 {
 public :
-    /**
-     *  @js ctor
-     */
     CCTransitionCrossFade();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionCrossFade();
 
     virtual void draw();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual void onEnter();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual void onExit();
 
 public:
-    static CCTransitionCrossFade* create(float t, CCScene* scene);
+    TRANSITION_CREATE_FUNC(CCTransitionCrossFade);
+    OLD_TRANSITION_CREATE_FUNC(CCTransitionCrossFade);
 };
 
 /** @brief CCTransitionTurnOffTiles:
@@ -666,24 +515,15 @@ Turn off the tiles of the outgoing scene in random order
 class CC_DLL CCTransitionTurnOffTiles : public CCTransitionScene ,public CCTransitionEaseScene
 {
 public :
-    /**
-     *  @js ctor
-     */
     CCTransitionTurnOffTiles();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionTurnOffTiles();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+
     virtual void onEnter();
     virtual CCActionInterval * easeActionWithAction(CCActionInterval * action);
 
 public:
-    static CCTransitionTurnOffTiles* create(float t, CCScene* scene);
+    TRANSITION_CREATE_FUNC(CCTransitionTurnOffTiles);
+    OLD_TRANSITION_CREATE_FUNC(CCTransitionTurnOffTiles);
 protected:
     virtual void sceneOrder();
 };
@@ -694,27 +534,16 @@ The odd columns goes upwards while the even columns goes downwards.
 class CC_DLL CCTransitionSplitCols : public CCTransitionScene , public CCTransitionEaseScene
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionSplitCols();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionSplitCols();
 
     virtual CCActionInterval* action(void);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual void onEnter();
     virtual CCActionInterval * easeActionWithAction(CCActionInterval * action);
 
 public:
-
-    static CCTransitionSplitCols* create(float t, CCScene* scene);
+    TRANSITION_CREATE_FUNC(CCTransitionSplitCols);
+    OLD_TRANSITION_CREATE_FUNC(CCTransitionSplitCols);
 };
 
 /** @brief CCTransitionSplitRows:
@@ -723,21 +552,14 @@ The odd rows goes to the left while the even rows goes to the right.
 class CC_DLL CCTransitionSplitRows : public CCTransitionSplitCols
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionSplitRows();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionSplitRows();
 
     virtual CCActionInterval* action(void);
 
 public:
-
-    static CCTransitionSplitRows* create(float t, CCScene* scene);
+    TRANSITION_CREATE_FUNC(CCTransitionSplitRows)
+    OLD_TRANSITION_CREATE_FUNC(CCTransitionSplitRows)
 };
 
 /** @brief CCTransitionFadeTR:
@@ -746,28 +568,18 @@ Fade the tiles of the outgoing scene from the left-bottom corner the to top-righ
 class CC_DLL CCTransitionFadeTR : public CCTransitionScene , public CCTransitionEaseScene
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionFadeTR();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionFadeTR();
-    virtual CCActionInterval* actionWithSize(const CCSize& size);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+    virtual CCActionInterval* actionWithSize(const ccGridSize& size);
     virtual void onEnter();
     virtual CCActionInterval* easeActionWithAction(CCActionInterval * action);
 
 public:
-
-    static CCTransitionFadeTR* create(float t, CCScene* scene);
+    TRANSITION_CREATE_FUNC(CCTransitionFadeTR)
+    OLD_TRANSITION_CREATE_FUNC(CCTransitionFadeTR)
 protected:
     virtual void sceneOrder();
+    
 };
 
 /** @brief CCTransitionFadeBL:
@@ -776,20 +588,13 @@ Fade the tiles of the outgoing scene from the top-right corner to the bottom-lef
 class CC_DLL CCTransitionFadeBL : public CCTransitionFadeTR
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionFadeBL();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionFadeBL();
-    virtual CCActionInterval* actionWithSize(const CCSize& size);
+    virtual CCActionInterval* actionWithSize(const ccGridSize& size);
 
 public:
-
-    static CCTransitionFadeBL* create(float t, CCScene* scene);
+    TRANSITION_CREATE_FUNC(CCTransitionFadeBL)
+    OLD_TRANSITION_CREATE_FUNC(CCTransitionFadeBL)
 };
 
 /** @brief CCTransitionFadeUp:
@@ -798,20 +603,13 @@ public:
 class CC_DLL CCTransitionFadeUp : public CCTransitionFadeTR
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionFadeUp();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionFadeUp();
-    virtual CCActionInterval* actionWithSize(const CCSize& size);
+    virtual CCActionInterval* actionWithSize(const ccGridSize& size);
 
 public:
-
-    static CCTransitionFadeUp* create(float t, CCScene* scene);
+    TRANSITION_CREATE_FUNC(CCTransitionFadeUp)
+    OLD_TRANSITION_CREATE_FUNC(CCTransitionFadeUp)
 };
 
 /** @brief CCTransitionFadeDown:
@@ -820,20 +618,13 @@ public:
 class CC_DLL CCTransitionFadeDown : public CCTransitionFadeTR
 {
 public:
-    /**
-     *  @js ctor
-     */
     CCTransitionFadeDown();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTransitionFadeDown();
-    virtual CCActionInterval* actionWithSize(const CCSize& size);
+    virtual CCActionInterval* actionWithSize(const ccGridSize& size);
 
 public:
-
-    static CCTransitionFadeDown* create(float t, CCScene* scene);
+    TRANSITION_CREATE_FUNC(CCTransitionFadeDown)
+    OLD_TRANSITION_CREATE_FUNC(CCTransitionFadeDown)
 };
 
 // end of transition group

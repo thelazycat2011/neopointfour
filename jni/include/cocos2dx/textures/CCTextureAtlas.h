@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2008-2010 Ricardo Quesada
 Copyright (c) 2011      Zynga Inc.
 
@@ -43,8 +43,8 @@ class CCTexture2D;
 
 /** @brief A class that implements a Texture Atlas.
 Supported features:
-* The atlas file can be a PVRTC, PNG or any other format supported by Texture2D
-* Quads can be updated in runtime
+* The atlas file can be a PVRTC, PNG or any other fomrat supported by Texture2D
+* Quads can be udpated in runtime
 * Quads can be added in runtime
 * Quads can be removed in runtime
 * Quads can be re-ordered in runtime
@@ -74,20 +74,17 @@ protected:
     CC_PROPERTY(ccV3F_C4B_T2F_Quad *, m_pQuads, Quads)
 
 public:
-    /**
-     * @js ctor
-     */
+
     CCTextureAtlas();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCTextureAtlas();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+
     const char* description();
+
+    /** creates a TextureAtlas with an filename and with an initial capacity for Quads.
+    * The TextureAtlas capacity can be increased in runtime.
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCTextureAtlas * textureAtlasWithFile(const char* file , unsigned int capacity);
 
     /** creates a TextureAtlas with an filename and with an initial capacity for Quads.
     * The TextureAtlas capacity can be increased in runtime.
@@ -101,11 +98,18 @@ public:
     */
     bool initWithFile(const char* file, unsigned int capacity);
 
+    /** creates a TextureAtlas with a previously initialized Texture2D object, and
+    * with an initial capacity for n Quads. 
+    * The TextureAtlas capacity can be increased in runtime.
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCTextureAtlas * textureAtlasWithTexture(CCTexture2D *texture, unsigned int capacity);
+
    /** creates a TextureAtlas with a previously initialized Texture2D object, and
     * with an initial capacity for n Quads. 
     * The TextureAtlas capacity can be increased in runtime.
     */
-    static CCTextureAtlas* createWithTexture(CCTexture2D *texture, unsigned int capacity);
+    static CCTextureAtlas* create(CCTexture2D *texture, unsigned int capacity);
 
 
     /** initializes a TextureAtlas with a previously initialized Texture2D object, and
@@ -211,12 +215,6 @@ public:
     /** listen the event that coming to foreground on Android
      */
     void listenBackToForeground(CCObject *obj);
-
-    /** whether or not the array buffer of the VBO needs to be updated*/
-    inline bool isDirty(void) { return m_bDirty; }
-    /** specify if the array buffer of the VBO needs to be updated */
-    inline void setDirty(bool bDirty) { m_bDirty = bDirty; }
-
 private:
     void setupIndices();
     void mapBuffers();

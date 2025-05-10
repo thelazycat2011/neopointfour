@@ -25,89 +25,59 @@ THE SOFTWARE.
 #ifndef __CC_EGLVIEW_WIN32_H__
 #define __CC_EGLVIEW_WIN32_H__
 
-#include "CCStdC.h"
+#include <Windows.h>
 #include "platform/CCCommon.h"
 #include "cocoa/CCGeometry.h"
 #include "platform/CCEGLViewProtocol.h"
 
 NS_CC_BEGIN
 
-typedef LRESULT (*CUSTOM_WND_PROC)(UINT message, WPARAM wParam, LPARAM lParam, BOOL* pProcessed);
-
 class CCEGL;
 
 class CC_DLL CCEGLView : public CCEGLViewProtocol
 {
-protected:
-    //Robtop Modification
-    virtual ~CCEGLView();
 public:
     CCEGLView();
+    virtual ~CCEGLView();
 
     /* override functions */
     virtual bool isOpenGLReady();
     virtual void end();
     virtual void swapBuffers();
+    virtual bool canSetContentScaleFactor();
+    virtual void setContentScaleFactor(float contentScaleFactor);
     virtual void setFrameSize(float width, float height);
-	
-    //Robtop Modification
-    //virtual void setEditorFrameSize(float width, float height,HWND hWnd); 
     virtual void setIMEKeyboardState(bool bOpen);
 
-    void setMenuResource(LPCWSTR menu);
-    void setWndProc(CUSTOM_WND_PROC proc);
-
-protected:
-    //Robtop Modification
-    //virtual bool Create();
-public:
+private:
+    virtual bool Create(LPCTSTR pTitle, int w, int h);
     bool initGL();
     void destroyGL();
+public:
+    virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
-    //Robtop Modification
-    //virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
-
-	void setHWnd(HWND hWnd);
     // win32 platform function
     HWND getHWnd();
-    
-    //Robtop Modification
     void resize(int width, int height);
-	
-    /* 
-     * Set zoom factor for frame. This method is for debugging big resolution (e.g.new ipad) app on desktop.
-     */
-    void setFrameZoomFactor(float fZoomFactor);
-	float getFrameZoomFactor();
-    
-    //Robtop Modification
     void centerWindow();
 
     typedef void (*LPFN_ACCELEROMETER_KEYHOOK)( UINT message,WPARAM wParam, LPARAM lParam );
     void setAccelerometerKeyHook( LPFN_ACCELEROMETER_KEYHOOK lpfnAccelerometerKeyHook );
 
-    virtual void setViewPortInPoints(float x , float y , float w , float h);
-    virtual void setScissorInPoints(float x , float y , float w , float h);
-    
     // static function
     /**
     @brief    get the shared main open gl window
     */
-    static CCEGLView* sharedOpenGLView();
+    static CCEGLView& sharedOpenGLView();
 
 protected:
-	static CCEGLView* s_pEglView;
+
+private:
     bool m_bCaptured;
     HWND m_hWnd;
     HDC  m_hDC;
     HGLRC m_hRC;
     LPFN_ACCELEROMETER_KEYHOOK m_lpfnAccelerometerKeyHook;
-    bool m_bSupportTouch;
-
-    LPCWSTR m_menu;
-    CUSTOM_WND_PROC m_wndproc;
-
-    float m_fFrameZoomFactor;
 };
 
 NS_CC_END

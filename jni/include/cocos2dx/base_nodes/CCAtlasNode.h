@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2008-2010 Ricardo Quesada
 Copyright (c) 2011      Zynga Inc.
 
@@ -40,7 +40,8 @@ NS_CC_BEGIN
 
 class CCTextureAtlas;
 
-/** @brief CCAtlasNode is a subclass of CCNode that implements the CCRGBAProtocol and CCTextureProtocol protocol
+/** @brief CCAtlasNode is a subclass of CCNode that implements the CCRGBAProtocol and
+CCTextureProtocol protocol
 
 It knows how to render a TextureAtlas object.
 If you are going to render a TextureAtlas consider subclassing CCAtlasNode (or a subclass of CCAtlasNode)
@@ -48,7 +49,7 @@ If you are going to render a TextureAtlas consider subclassing CCAtlasNode (or a
 All features from CCNode are valid, plus the following features:
 - opacity and RGB colors
 */
-class CC_DLL CCAtlasNode : public CCNodeRGBA, public CCTextureProtocol
+class CC_DLL CCAtlasNode : public CCNode, public CCRGBAProtocol, public CCTextureProtocol
 {
 protected:
 
@@ -68,26 +69,26 @@ protected:
 
     // protocol variables
     bool m_bIsOpacityModifyRGB;
+    bool isOpacityModifyRGB();
+    void setOpacityModifyRGB(bool isOpacityModifyRGB);
     
-    CC_PROPERTY(ccBlendFunc, m_tBlendFunc, BlendFunc);
+    CC_PROPERTY_RET_CONST(ccBlendFunc, m_tBlendFunc, BlendFunc);
+    CC_PROPERTY(GLubyte, m_cOpacity, Opacity);
+    CC_PROPERTY_PASS_BY_REF(ccColor3B, m_tColor, Color);
 
     // quads to draw
     CC_PROPERTY(unsigned int, m_uQuadsToDraw, QuadsToDraw);
     // color uniform
     GLint    m_nUniformColor;
-    // This varible is only used for CCLabelAtlas FPS display. So plz don't modify its value.
-    bool m_bIgnoreContentScaleFactor;
-    
 public:
-    /**
-     *  @js ctor
-     */
     CCAtlasNode();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCAtlasNode();
+
+    /** creates a CCAtlasNode  with an Atlas file the width and height of each item and the quantity of items to render
+	@deprecated: This interface will be deprecated sooner or later.
+	*/
+    CC_DEPRECATED_ATTRIBUTE static CCAtlasNode * atlasWithTileFile(const char* tile,unsigned int tileWidth, unsigned int tileHeight, 
+         unsigned int itemsToRender);
 
 	/** creates a CCAtlasNode  with an Atlas file the width and height of each item and the quantity of items to render*/
 	static CCAtlasNode * create(const char* tile,unsigned int tileWidth, unsigned int tileHeight, 
@@ -96,11 +97,8 @@ public:
     /** initializes an CCAtlasNode  with an Atlas file the width and height of each item and the quantity of items to render*/
     bool initWithTileFile(const char* tile, unsigned int tileWidth, unsigned int tileHeight, unsigned int itemsToRender);
 
-    /** initializes an CCAtlasNode  with a texture the width and height of each item measured in points and the quantity of items to render*/
-    bool initWithTexture(CCTexture2D* texture, unsigned int tileWidth, unsigned int tileHeight, unsigned int itemsToRender);
-    
     /** updates the Atlas (indexed vertex array).
-    * Shall be overridden in subclasses
+    * Shall be overriden in subclasses
     */
     virtual void updateAtlasValues();
 
@@ -113,20 +111,12 @@ public:
 
     /** sets a new texture. it will be retained*/
     virtual void setTexture(CCTexture2D *texture);
-    
-    virtual bool isOpacityModifyRGB();
-    virtual void setOpacityModifyRGB(bool isOpacityModifyRGB);
-    virtual const ccColor3B& getColor(void);
-    virtual void setColor(const ccColor3B& color);
-    virtual void setOpacity(GLubyte opacity);
 
 private :
     void calculateMaxItems();
     void updateBlendFunc();
     void updateOpacityModifyRGB();
-    
-    friend class CCDirector;
-    void setIgnoreContentScaleFactor(bool bIgnoreContentScaleFactor);
+
 };
 
 // end of base_node group

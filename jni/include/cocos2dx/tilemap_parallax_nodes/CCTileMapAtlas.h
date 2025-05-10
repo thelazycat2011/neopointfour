@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2008-2010 Ricardo Quesada
 Copyright (c) 2011      Zynga Inc.
 
@@ -59,15 +59,13 @@ class CC_DLL CCTileMapAtlas : public CCAtlasNode
     /** TileMap info */
     CC_PROPERTY(struct sImageTGA*, m_pTGAInfo, TGAInfo);
 public:
-    /**
-     * @js ctor
-     */
     CCTileMapAtlas();
-    /**
-     * @js NA
-     * @lua NA
-     */
     virtual ~CCTileMapAtlas();
+    /** creates a CCTileMap with a tile file (atlas) with a map file and the width and height of each tile in points.
+    The tile file will be loaded using the TextureMgr.
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCTileMapAtlas * tileMapAtlasWithTileFile(const char *tile, const char *mapFile, int tileWidth, int tileHeight);
     
     /** creates a CCTileMap with a tile file (atlas) with a map file and the width and height of each tile in points.
     The tile file will be loaded using the TextureMgr.
@@ -79,24 +77,23 @@ public:
     */
     bool initWithTileFile(const char *tile, const char *mapFile, int tileWidth, int tileHeight);
     /** returns a tile from position x,y.
-     For the moment only channel R is used
-     @js getTileAt
-     */
-    ccColor3B tileAt(const CCPoint& position);
+    For the moment only channel R is used
+    */
+    ccColor3B tileAt(const ccGridSize& position);
     /** sets a tile at position x,y.
     For the moment only channel R is used
     */
-    void setTile(const ccColor3B& tile, const CCPoint& position);
+    void setTile(const ccColor3B& tile, const ccGridSize& position);
     /** dealloc the map from memory */
     void releaseMap();
 private:
     void loadTGAfile(const char *file);
     void calculateItemsToRender();
-    void updateAtlasValueAt(const CCPoint& pos, const ccColor3B& value, unsigned int index);
+    void updateAtlasValueAt(const ccGridSize& pos, const ccColor3B& value, unsigned int index);
     void updateAtlasValues();
 
 protected:
-    //! x,y to atlas dictionary
+    //! x,y to altas dicctionary
     CCDictionary* m_pPosToAtlasIndex;
     //! numbers of tiles to render
     int m_nItemsToRender;

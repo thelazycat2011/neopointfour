@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2008-2010 Ricardo Quesada
 Copyright (c) 2011      Zynga Inc.
 
@@ -35,18 +35,7 @@ THE SOFTWARE.
 #include "CCStdC.h"
 
 #ifndef CCAssert
-#if COCOS2D_DEBUG > 0
-extern bool CC_DLL cc_assert_script_compatible(const char *msg);
-#define CCAssert(cond, msg) do {                              \
-      if (!(cond)) {                                          \
-        if (!cc_assert_script_compatible(msg) && strlen(msg)) \
-          cocos2d::CCLog("Assert failed: %s", msg);           \
-        CC_ASSERT(cond);                                      \
-      } \
-    } while (0)
-#else
-#define CCAssert(cond, msg) ((void)(cond))
-#endif
+#define CCAssert(cond, msg)         CC_ASSERT(cond)
 #endif  // CCAssert
 
 #include "ccConfig.h"
@@ -80,7 +69,7 @@ simple macro that swaps 2 variables
  */
 #define CC_RADIANS_TO_DEGREES(__ANGLE__) ((__ANGLE__) * 57.29577951f) // PI * 180
 
-#define kCCRepeatForever (UINT_MAX -1)
+#define kCCRepeatForever UINT_MAX -1
 
 /** @def CC_BLEND_SRC
 default gl blend src function. Compatible with premultiplied alpha images.
@@ -95,11 +84,11 @@ default gl blend src function. Compatible with premultiplied alpha images.
  */
 #define CC_NODE_DRAW_SETUP() \
 do { \
-    ccGLEnable(m_eGLServerState); \
+    ccGLEnable( m_glServerState ); \
     CCAssert(getShaderProgram(), "No shader program set for this node"); \
     { \
         getShaderProgram()->use(); \
-        getShaderProgram()->setUniformsForBuiltins(); \
+        getShaderProgram()->setUniformForModelViewProjectionMatrix(); \
     } \
 } while(0)
 
@@ -174,7 +163,7 @@ CCSizeMake( (__size_in_points__).width * CC_CONTENT_SCALE_FACTOR(), (__size_in_p
             void operator=(const TypeName&)
 
 /**
-Helper macros which converts 4-byte little/big endian 
+Helper marcos which converts 4-byte little/big endian 
 integral number to the machine native number representation
  
 It should work same as apples CFSwapInt32LittleToHost(..)
@@ -205,9 +194,9 @@ It should work same as apples CFSwapInt32LittleToHost(..)
 #define CC_PROFILER_STOP_CATEGORY(__cat__, __name__) do{ if(__cat__) CCProfilingEndTimingBlock(__name__); } while(0)
 #define CC_PROFILER_RESET_CATEGORY(__cat__, __name__) do{ if(__cat__) CCProfilingResetTimingBlock(__name__); } while(0)
 
-#define CC_PROFILER_START_INSTANCE(__id__, __name__) do{ CCProfilingBeginTimingBlock( CCString::createWithFormat("%08X - %s", __id__, __name__)->getCString() ); } while(0)
-#define CC_PROFILER_STOP_INSTANCE(__id__, __name__) do{ CCProfilingEndTimingBlock(    CCString::createWithFormat("%08X - %s", __id__, __name__)->getCString() ); } while(0)
-#define CC_PROFILER_RESET_INSTANCE(__id__, __name__) do{ CCProfilingResetTimingBlock( CCString::createWithFormat("%08X - %s", __id__, __name__)->getCString() ); } while(0)
+#define CC_PROFILER_START_INSTANCE(__id__, __name__) do{ CCProfilingBeginTimingBlock( [NSString stringWithFormat:@"%08X - %@", __id__, __name__] ); } while(0)
+#define CC_PROFILER_STOP_INSTANCE(__id__, __name__) do{ CCProfilingEndTimingBlock(    [NSString stringWithFormat:@"%08X - %@", __id__, __name__] ); } while(0)
+#define CC_PROFILER_RESET_INSTANCE(__id__, __name__) do{ CCProfilingResetTimingBlock( [NSString stringWithFormat:@"%08X - %@", __id__, __name__] ); } while(0)
 
 
 #else

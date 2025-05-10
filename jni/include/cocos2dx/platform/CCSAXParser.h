@@ -36,10 +36,6 @@ NS_CC_BEGIN
 
 typedef unsigned char CC_XML_CHAR;
 
-/**
- * @js NA
- * @lua NA
- */
 class CC_DLL CCSAXDelegator
 {
 public:
@@ -48,10 +44,6 @@ public:
     virtual void textHandler(void *ctx, const char *s, int len) = 0;
 };
 
-/**
- * @js NA
- * @lua NA
- */
 class CC_DLL CCSAXParser
 {
     CCSAXDelegator*    m_pDelegator;

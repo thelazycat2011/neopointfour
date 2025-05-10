@@ -25,20 +25,20 @@
 #define __NEON_MATRIX_IMPL_H__
 
 #ifdef __arm__
-#if defined(__QNX__) || defined(ANDROID) || defined(I3D_ARCH_ARM) || defined(__native_client__) || defined(TIZEN) // MARMALADE CHANGE: Added for Marmalade support
-// blackberry and android don't have arm/arch.h but it defines __arm__
+#ifdef ANDROID
+// android don't have arm/arch.h but it defines __arm__
 #else
 #include "arm/arch.h"
-#endif 
+#endif //ANDROID
 #endif // __arm__
 
-// Matrices are assumed to be stored in column major format according to OpenGL
+// Matrixes are assumed to be stored in column major format according to OpenGL
 // specification.
 
-// Multiplies two 4x4 matrices (a,b) outputting a 4x4 matrix (output)
+// Multiplies two 4x4 matrices (a,b) outputing a 4x4 matrix (output)
 void NEON_Matrix4Mul(const float* a, const float* b, float* output );
 
-// Multiplies a 4x4 matrix (m) with a vector 4 (v), outputting a vector 4
+// Multiplies a 4x4 matrix (m) with a vector 4 (v), outputing a vector 4
 void NEON_Matrix4Vector4Mul(const float* m, const float* v, float* output);
 
 

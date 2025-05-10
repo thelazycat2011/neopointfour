@@ -48,21 +48,11 @@ It is a good practice to use and CCScene as the parent of all your nodes.
 */
 class CC_DLL CCScene : public CCNode
 {
-private:
-    uint32_t m_uUnknown;
 public:
-    /**
-     *  @js ctor
-     */
     CCScene();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCScene();
     bool init();
-    int getHighestChildZ();
-
+    CC_DEPRECATED_ATTRIBUTE static CCScene *node(void);
     static CCScene *create(void);
 };
 
@@ -70,5 +60,73 @@ public:
 /// @}
 
 NS_CC_END
+
+// for the subclass of CCScene, each has to implement the static "node" method
+// @deprecated: This interface will be deprecated sooner or later.
+#define SCENE_NODE_FUNC(scene) \
+CC_DEPRECATED_ATTRIBUTE static scene* node() \
+{ \
+    scene *pRet = new scene(); \
+    if (pRet && pRet->init()) \
+    { \
+        pRet->autorelease(); \
+        return pRet; \
+    } \
+    else \
+    { \
+        delete pRet; \
+        pRet = NULL; \
+        return NULL; \
+    } \
+}; 
+
+// @deprecated: This interface will be deprecated sooner or later.
+#define SCENE_FUNC_PARAM(__TYPE__,__PARAMTYPE__,__PARAM__) \
+    CC_DEPRECATED_ATTRIBUTE static cocos2d::CCScene* node(__PARAMTYPE__ __PARAM__) \
+    { \
+        cocos2d::CCScene * scene = NULL; \
+        do  \
+        { \
+            scene = cocos2d::CCScene::node(); \
+            CC_BREAK_IF(! scene); \
+            __TYPE__ *layer = __TYPE__::node(__PARAM__); \
+            CC_BREAK_IF(! layer); \
+            scene->addChild(layer); \
+        } while (0); \
+        return scene; \
+    }
+
+// for the subclass of CCScene, each has to implement the static "create" method 
+#define SCENE_CREATE_FUNC(scene) \
+static scene* create() \
+{ \
+    scene *pRet = new scene(); \
+    if (pRet && pRet->init()) \
+    { \
+        pRet->autorelease(); \
+        return pRet; \
+    } \
+    else \
+    { \
+        delete pRet; \
+        pRet = NULL; \
+        return NULL; \
+    } \
+}; 
+
+#define SCENE_CREATE_FUNC_PARAM(__TYPE__,__PARAMTYPE__,__PARAM__) \
+    static cocos2d::CCScene* create(__PARAMTYPE__ __PARAM__) \
+    { \
+        cocos2d::CCScene * scene = NULL; \
+        do  \
+        { \
+            scene = cocos2d::CCScene::create(); \
+            CC_BREAK_IF(! scene); \
+            __TYPE__ *layer = __TYPE__::create(__PARAM__); \
+            CC_BREAK_IF(! layer); \
+            scene->addChild(layer); \
+        } while (0); \
+        return scene; \
+    }
 
 #endif // __CCSCENE_H__

@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2011      Ricardo Quesada
 Copyright (c) 2011      Zynga Inc.
 
@@ -45,18 +45,10 @@ class CCGLProgram;
 class CC_DLL CCShaderCache : public CCObject 
 {
 public:
-    /**
-     * @js ctor
-     */
     CCShaderCache();
-    /**
-     * @js NA
-     * @lua NA
-     */
+
     virtual ~CCShaderCache();
-    /** returns the shared instance 
-     *  @js getInstance
-     */
+    /** returns the shared instance */
     static CCShaderCache* sharedShaderCache();
 
     /** purges the cache. It releases the retained instance. */
@@ -68,11 +60,7 @@ public:
     /** reload the default shaders */
     void reloadDefaultShaders();
 
-
-
-    /** returns a GL program for a given key 
-     *  @js getProgram
-     */
+    /** returns a GL program for a given key */
     CCGLProgram * programForKey(const char* key);
 
     /** adds a CCGLProgram to the cache for a given name */

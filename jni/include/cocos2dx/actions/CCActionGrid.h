@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2009      On-Core
 
 http://www.cocos2d-x.org
@@ -41,30 +41,24 @@ class CCGridBase;
 class CC_DLL CCGridAction : public CCActionInterval
 {
 public:
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
     virtual void startWithTarget(CCNode *pTarget);
     virtual CCActionInterval* reverse(void);
 
     /** initializes the action with size and duration */
-    virtual bool initWithDuration(float duration, const CCSize& gridSize);
-
+    virtual bool initWithSize(const ccGridSize& gridSize, float duration);
     /** returns the grid */
     virtual CCGridBase* getGrid(void);
 
 public:
+    /** creates the action with size and duration 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCGridAction* actionWithSize(const ccGridSize& gridSize, float duration);
     /** creates the action with size and duration */
-    // We can't make this create function compatible with previous version, bindings-generator will be confused since they
-    // have the same function name and the same number of arguments. So sorry about that.
-    //CC_DEPRECATED_ATTRIBUTE static CCGridAction* create(const CCSize& gridSize, float duration);
-
-    /** creates the action with size and duration */
-    static CCGridAction* create(float duration, const CCSize& gridSize);
+    static CCGridAction* create(const ccGridSize& gridSize, float duration);
 protected:
-    CCSize m_sGridSize;
+    ccGridSize m_sGridSize;
 };
 
 /** 
@@ -77,18 +71,19 @@ public:
     /** returns the grid */
     virtual CCGridBase* getGrid(void);
     /** returns the vertex than belongs to certain position in the grid */
-    ccVertex3F vertex(const CCPoint& position);
+    ccVertex3F vertex(const ccGridSize& pos);
     /** returns the non-transformed vertex than belongs to certain position in the grid */
-    ccVertex3F originalVertex(const CCPoint& position);
+    ccVertex3F originalVertex(const ccGridSize& pos);
     /** sets a new vertex to a certain position of the grid */
-    void setVertex(const CCPoint& position, const ccVertex3F& vertex);
+    void setVertex(const ccGridSize& pos, const ccVertex3F& vertex);
 
 public:
     /** creates the action with size and duration 
-     *  @js NA
-     *  @lua NA
-     */
-    static CCGrid3DAction* create(float duration, const CCSize& gridSize);
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCGrid3DAction* actionWithSize(const ccGridSize& gridSize, float duration);
+    /** creates the action with size and duration */
+    static CCGrid3DAction* create(const ccGridSize& gridSize, float duration);
 };
 
 /** @brief Base class for CCTiledGrid3D actions */
@@ -96,31 +91,28 @@ class CC_DLL CCTiledGrid3DAction : public CCGridAction
 {
 public:
     /** returns the tile that belongs to a certain position of the grid */
-    ccQuad3 tile(const CCPoint& position);
+    ccQuad3 tile(const ccGridSize& pos);
     /** returns the non-transformed tile that belongs to a certain position of the grid */
-    ccQuad3 originalTile(const CCPoint& position);
+    ccQuad3 originalTile(const ccGridSize& pos);
     /** sets a new tile to a certain position of the grid */
-    void setTile(const CCPoint& position, const ccQuad3& coords);
+    void setTile(const ccGridSize& pos, const ccQuad3& coords);
 
     /** returns the grid */
     virtual CCGridBase* getGrid(void);
 
 public:
     /** creates the action with size and duration 
-     *  @js NA
-     *  @lua NA
-     */
-    static CCTiledGrid3DAction* create(float duration, const CCSize& gridSize);
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCTiledGrid3DAction* actionWithSize(const ccGridSize& gridSize, float duration);
+    /** creates the action with size and duration */
+    static CCTiledGrid3DAction* create(const ccGridSize& gridSize, float duration);
 };
 
 /** @brief CCAccelDeccelAmplitude action */
 class CC_DLL CCAccelDeccelAmplitude : public CCActionInterval
 {
 public:
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCAccelDeccelAmplitude(void);
     /** initializes the action with an inner action that has the amplitude property, and a duration time */
     bool initWithAction(CCAction *pAction, float duration);
@@ -135,6 +127,10 @@ public:
     inline void setRate(float fRate) { m_fRate = fRate; }
 
 public:
+    /** creates the action with an inner action that has the amplitude property, and a duration time 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCAccelDeccelAmplitude* actionWithAction(CCAction *pAction, float duration);
     /** creates the action with an inner action that has the amplitude property, and a duration time */
     static CCAccelDeccelAmplitude* create(CCAction *pAction, float duration);
 
@@ -147,10 +143,6 @@ protected:
 class CC_DLL CCAccelAmplitude : public CCActionInterval
 {
 public:
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     ~CCAccelAmplitude(void);
     /** initializes the action with an inner action that has the amplitude property, and a duration time */
     bool initWithAction(CCAction *pAction, float duration);
@@ -165,6 +157,10 @@ public:
     virtual CCActionInterval* reverse(void);
 
 public:
+    /** creates the action with an inner action that has the amplitude property, and a duration time
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCAccelAmplitude* actionWithAction(CCAction *pAction, float duration);
     /** creates the action with an inner action that has the amplitude property, and a duration time */
     static CCAccelAmplitude* create(CCAction *pAction, float duration);
 protected:
@@ -176,10 +172,6 @@ protected:
 class CC_DLL CCDeccelAmplitude : public CCActionInterval
 {
 public:
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     ~CCDeccelAmplitude(void);
     /** initializes the action with an inner action that has the amplitude property, and a duration time */
     bool initWithAction(CCAction *pAction, float duration);
@@ -194,6 +186,10 @@ public:
     virtual CCActionInterval* reverse(void);
 
 public:
+    /** creates the action with an inner action that has the amplitude property, and a duration time 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCDeccelAmplitude* actionWithAction(CCAction *pAction, float duration);
     /** creates the action with an inner action that has the amplitude property, and a duration time */
     static CCDeccelAmplitude* create(CCAction *pAction, float duration);
 
@@ -213,6 +209,10 @@ public:
     virtual void startWithTarget(CCNode *pTarget);
 
 public:
+    /** Allocates and initializes the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCStopGrid* action(void);
     /** Allocates and initializes the action */
     static CCStopGrid* create(void);
 };
@@ -227,6 +227,10 @@ public:
     virtual void startWithTarget(CCNode *pTarget);
 
 public:
+    /** creates an action with the number of times that the current grid will be reused 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCReuseGrid* actionWithTimes(int times);
     /** creates an action with the number of times that the current grid will be reused */
     static CCReuseGrid* create(int times);
 protected:

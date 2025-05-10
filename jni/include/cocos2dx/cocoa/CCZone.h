@@ -36,10 +36,7 @@ NS_CC_BEGIN
  */
 
 class CCObject;
-/**
- * @js NA
- * @lua NA
- */
+
 class CC_DLL CCZone
 {
 public:

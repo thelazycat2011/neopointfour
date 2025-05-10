@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2008-2010 Ricardo Quesada
 Copyright (c) 2011      Zynga Inc.
 
@@ -58,7 +58,7 @@ using the camera.
 
 - It doesn't work on batched nodes like CCSprite objects when they are parented to a CCSpriteBatchNode object.
 
-- It is recommended to use it ONLY if you are going to create 3D effects. For 2D effects, use the action CCFollow or position/scale/rotate.
+- It is recommended to use it ONLY if you are going to create 3D effects. For 2D effecs, use the action CCFollow or position/scale/rotate.
 
 */
 class CC_DLL CCCamera : public CCObject
@@ -79,20 +79,11 @@ protected:
     bool m_bDirty;
     kmMat4    m_lookupMatrix;
 public:
-    /**
-     *  @js ctor
-     */
     CCCamera(void);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     ~CCCamera(void);
 
     void init(void);
-    /**
-     *  @js NA
-     */
+
     const char* description(void);
 
     /** sets the dirty value */
@@ -104,30 +95,18 @@ public:
     void restore(void);
     /** Sets the camera using gluLookAt using its eye, center and up_vector */
     void locate(void);
-    /** sets the eye values in points 
-     *  @js setEye
-     */
+    /** sets the eye values in points */
     void setEyeXYZ(float fEyeX, float fEyeY, float fEyeZ);
-    /** sets the center values in points 
-     *  @js setCenter
-     */
+    /** sets the center values in points */
     void setCenterXYZ(float fCenterX, float fCenterY, float fCenterZ);
-    /** sets the up values 
-     *  @js setUp
-     */
+    /** sets the up values */
     void setUpXYZ(float fUpX, float fUpY, float fUpZ);
 
-    /** get the eye vector values in points 
-     *  @js NA
-     */
+    /** get the eye vector values in points */
     void getEyeXYZ(float *pEyeX, float *pEyeY, float *pEyeZ);
-    /** get the center vector values int points 
-     *  @js NA
-     */
+    /** get the center vector values int points */
     void getCenterXYZ(float *pCenterX, float *pCenterY, float *pCenterZ);
-    /** get the up vector values 
-     *  @js NA
-     */
+    /** get the up vector values */
     void getUpXYZ(float *pUpX, float *pUpY, float *pUpZ);
 public:
     /** returns the Z eye */

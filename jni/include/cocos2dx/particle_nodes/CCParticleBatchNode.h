@@ -67,18 +67,21 @@ class CCParticleSystem;
 class CC_DLL CCParticleBatchNode : public CCNode, public CCTextureProtocol
 {
 public:
-    /**
-     * @js ctor
-     */
     CCParticleBatchNode();
-    /**
-     * @js NA
-     * @lua NA
-     */
     virtual ~CCParticleBatchNode();
 
+    /** initializes the particle system with CCTexture2D, a capacity of particles, which particle system to use 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCParticleBatchNode* batchNodeWithTexture(CCTexture2D *tex, unsigned int capacity = kCCParticleDefaultCapacity);
+
+    /** initializes the particle system with the name of a file on disk (for a list of supported formats look at the CCTexture2D class), a capacity of particles
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCParticleBatchNode* batchNodeWithFile(const char* fileImage, unsigned int capacity = kCCParticleDefaultCapacity);
+
     /** initializes the particle system with CCTexture2D, a capacity of particles, which particle system to use */
-    static CCParticleBatchNode* createWithTexture(CCTexture2D *tex, unsigned int capacity = kCCParticleDefaultCapacity);
+    static CCParticleBatchNode* create(CCTexture2D *tex, unsigned int capacity = kCCParticleDefaultCapacity);
 
     /** initializes the particle system with the name of a file on disk (for a list of supported formats look at the CCTexture2D class), a capacity of particles */
     static CCParticleBatchNode* create(const char* fileImage, unsigned int capacity = kCCParticleDefaultCapacity);
@@ -110,10 +113,8 @@ public:
     // sets a new texture. it will be retained
     virtual void setTexture(CCTexture2D *texture);
     virtual void setBlendFunc(ccBlendFunc blendFunc);
-    /** returns the blending function used for the texture
-     * @js NA
-     */
-    virtual ccBlendFunc getBlendFunc(void);
+    // returns the blending function used for the texture
+    virtual CC_GD_ADD(const) ccBlendFunc getBlendFunc(void);
 
     void visit();
 
@@ -125,9 +126,7 @@ private:
     unsigned int addChildHelper(CCParticleSystem* child, int z, int aTag);
     void updateBlendFunc(void);
     /** the texture atlas used for drawing the quads */
-    
-    //Robtop Modification:
-    ROB_CC_SYNTHESIZE(CCTextureAtlas*, m_pTextureAtlas, TextureAtlas);
+    CC_SYNTHESIZE(CCTextureAtlas*, m_pTextureAtlas, TextureAtlas);
 private:
     /** the blend function used for drawing the quads */
     ccBlendFunc m_tBlendFunc;

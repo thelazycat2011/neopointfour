@@ -24,11 +24,6 @@ THE SOFTWARE.
 #ifndef __CCSTRING_H__
 #define __CCSTRING_H__
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_BLACKBERRY)
-#include <string.h>
-#endif
-
-#include <stdarg.h>
 #include <string>
 #include <functional>
 #include "CCObject.h"
@@ -38,42 +33,23 @@ NS_CC_BEGIN
 /**
  * @addtogroup data_structures
  * @{
- * @ js NA
  */
 
 class CC_DLL CCString : public CCObject
 {
 public:
-    /**
-     * @lua NA
-     */
     CCString();
-    /**
-     * @lua NA
-     */
     CCString(const char* str);
-    /**
-     * @lua NA
-     */
     CCString(const std::string& str);
-    /**
-     * @lua NA
-     */
     CCString(const CCString& str);
-    /**
-     * @lua NA
-     */
+
     virtual ~CCString();
     
-    /* override assignment operator
-     * @lua NA
-     */
+    /* override assignment operator */
     CCString& operator= (const CCString& other);
 
-    /** init a string with format, it's similar with the c function 'sprintf' 
-     * @lua NA
-     */
-    bool initWithFormat(const char* format, ...) CC_FORMAT_PRINTF(2, 3);
+    /** init a string with format, it's similar with the c function 'sprintf' */ 
+    bool initWithFormat(const char* format, ...);
 
     /** convert to int value */
     int intValue() const;
@@ -99,14 +75,47 @@ public:
     /** compare to a c string */
     int compare(const char *) const;
 
-    /* override functions 
-     * @lua NA
-     * @js  NA
-     */
+    /* override functions */
     virtual CCObject* copyWithZone(CCZone* pZone);
     virtual bool isEqual(const CCObject* pObject);
 
-    /** create a string with std string, you can also pass a c string pointer because the default constructor of std::string can access a c string pointer. 
+    /* static funcitons */
+    /** create a string with c string
+     *  @return A CCString pointer which is an autorelease object pointer,
+     *          it means that you needn't do a release operation unless you retain it.
+     @deprecated: This interface will be deprecated sooner or later.
+     */
+    CC_DEPRECATED_ATTRIBUTE static CCString* stringWithCString(const char* pStr);
+
+    /** create a string with std::string
+     *  @return A CCString pointer which is an autorelease object pointer,
+     *          it means that you needn't do a release operation unless you retain it.
+     */
+    CC_DEPRECATED_ATTRIBUTE static CCString* stringWithString(const std::string& str);
+
+    /** create a string with format, it's similar with the c function 'sprintf', the default buffer size is (1024*100) bytes,
+     *  if you want to change it, you should modify the kMaxStringLen macro in CCString.cpp file.
+     *  @return A CCString pointer which is an autorelease object pointer,
+     *          it means that you needn't do a release operation unless you retain it.
+     @deprecated: This interface will be deprecated sooner or later.
+     */ 
+    CC_DEPRECATED_ATTRIBUTE static CCString* stringWithFormat(const char* format, ...);
+
+    /** create a string with binary data 
+     *  @return A CCString pointer which is an autorelease object pointer,
+     *          it means that you needn't do a release operation unless you retain it.
+     @deprecated: This interface will be deprecated sooner or later.
+     */
+    CC_DEPRECATED_ATTRIBUTE static CCString* stringWithData(const unsigned char* pData, unsigned long nLen);
+
+    /** create a string with a file, 
+     *  @return A CCString pointer which is an autorelease object pointer,
+     *          it means that you needn't do a release operation unless you retain it.
+     @deprecated: This interface will be deprecated sooner or later.
+     */
+    CC_DEPRECATED_ATTRIBUTE static CCString* stringWithContentsOfFile(const char* pszFileName);
+
+    /** create a string with std string, you can also pass a c string pointer because the default constuctor of std::string can access a c string pointer. 
      *  @return A CCString pointer which is an autorelease object pointer,
      *          it means that you needn't do a release operation unless you retain it.
      */
@@ -116,25 +125,20 @@ public:
      *  if you want to change it, you should modify the kMaxStringLen macro in CCString.cpp file.
      *  @return A CCString pointer which is an autorelease object pointer,
      *          it means that you needn't do a release operation unless you retain it.
-     *  @lua NA
      */ 
-    static CCString* createWithFormat(const char* format, ...) CC_FORMAT_PRINTF(1, 2);
+    static CCString* createWithFormat(const char* format, ...);
 
     /** create a string with binary data 
      *  @return A CCString pointer which is an autorelease object pointer,
      *          it means that you needn't do a release operation unless you retain it.
      */
-    static CCString* createWithData(const unsigned char* pData, unsigned long nLen);
+    static CCString* create(const unsigned char* pData, unsigned long nLen);
 
     /** create a string with a file, 
      *  @return A CCString pointer which is an autorelease object pointer,
      *          it means that you needn't do a release operation unless you retain it.
      */
     static CCString* createWithContentsOfFile(const char* pszFileName);
-    /**
-     * @lua NA
-     */
-    virtual void acceptVisitor(CCDataVisitor &visitor);
 
 private:
 
@@ -145,13 +149,12 @@ public:
     std::string m_sString;
 };
 
-//std::binary_function emoved in C++ 17
-/*struct CCStringCompare : public std::binary_function<CCString *, CCString *, bool> {
+struct CCStringCompare : public std::binary_function<CCString *, CCString *, bool> {
     public:
         bool operator() (CCString * a, CCString * b) const {
             return strcmp(a->getCString(), b->getCString()) < 0;
         }
-};*/
+};
 
 #define CCStringMake(str) CCString::create(str)
 #define ccs               CCStringMake

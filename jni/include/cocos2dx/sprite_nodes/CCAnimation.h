@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2008-2010 Ricardo Quesada
 Copyright (c) 2011      Zynga Inc.
 
@@ -55,42 +55,20 @@ class CCSpriteFrame;
 class CC_DLL CCAnimationFrame : public CCObject
 {
 public:
-    /**
-     * @js ctor
-     */
     CCAnimationFrame();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCAnimationFrame();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
     /** initializes the animation frame with a spriteframe, number of delay units and a notification user info */
     bool initWithSpriteFrame(CCSpriteFrame* spriteFrame, float delayUnits, CCDictionary* userInfo);
     
-    /** CCSpriteFrameName to be used */ //Robtop Modification: Dropped virtualness
-    //CC_SYNTHESIZE_RETAIN(CCSpriteFrame*, m_pSpriteFrame, SpriteFrame)
+    /** CCSpriteFrameName to be used */
+    CC_SYNTHESIZE_RETAIN(CCSpriteFrame*, m_pSpriteFrame, SpriteFrame)
 
     /**  how many units of time the frame takes */
-    //Robtop Modification: Dropped virtualness: original CC_SYNTHESIZE
-    //CC_PROPERTY_NOVIRTUAL(float, m_fDelayUnits, DelayUnits)
+    CC_SYNTHESIZE(float, m_fDelayUnits, DelayUnits)
 
-    /**  A CCAnimationFrameDisplayedNotification notification will be broadcast when the frame is displayed with this dictionary as UserInfo. If UserInfo is nil, then no notification will be broadcast. */
-    //Robtop Modification: Dropped virtualness
-    //CC_SYNTHESIZE_RETAIN(CCDictionary*, m_pUserInfo, UserInfo)
-
-    CCSpriteFrame* getSpriteFrame(void)const;
-    void setSpriteFrame(CCSpriteFrame*);
-    
-    float getDelayUnits(void)const;
-    void setDelayUnits(float);
-
-    CCDictionary* getUserInfo(void)const;
-    void setUserInfo(CCDictionary*);
+    /**  A CCAnimationFrameDisplayedNotification notification will be broadcasted when the frame is displayed with this dictionary as UserInfo. If UserInfo is nil, then no notification will be broadcasted. */
+    CC_SYNTHESIZE_RETAIN(CCDictionary*, m_pUserInfo, UserInfo)
 };
 
 
@@ -107,17 +85,29 @@ You can animate a CCAnimation object by using the CCAnimate action. Example:
 class CC_DLL CCAnimation : public CCObject
 {
 public:
-    /**
-     * @js ctor
-     */
     CCAnimation();
-    /**
-     * @js NA
-     * @lua NA
-     */
     ~CCAnimation(void);
 public:
     /** Creates an animation
+    @deprecated: This interface will be deprecated sooner or later.
+    @since v0.99.5
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCAnimation* animation(void);
+
+    /* Creates an animation with an array of CCSpriteFrame and a delay between frames in seconds.
+     The frames will be added with one "delay unit".
+     @deprecated: This interface will be deprecated sooner or later.
+     @since v0.99.5
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCAnimation* animationWithSpriteFrames(CCArray* arrayOfSpriteFrameNames, float delay = 0.0f);
+
+    /* Creates an animation with an array of CCAnimationFrame, the delay per units in seconds and and how many times it should be executed.
+     @deprecated: This interface will be deprecated sooner or later.
+     @since v2.0
+     */
+    CC_DEPRECATED_ATTRIBUTE static CCAnimation* animationWithAnimationFrames(CCArray *arrayOfAnimationFrameNames, float delayPerUnit, unsigned int loops);
+
+        /** Creates an animation
     @since v0.99.5
     */
     static CCAnimation* create(void);
@@ -125,17 +115,13 @@ public:
     /* Creates an animation with an array of CCSpriteFrame and a delay between frames in seconds.
      The frames will be added with one "delay unit".
      @since v0.99.5
-     @js create
     */
-    static CCAnimation* createWithSpriteFrames(CCArray* arrayOfSpriteFrameNames, float delay = 0.0f);
+    static CCAnimation* create(CCArray* arrayOfSpriteFrameNames, float delay = 0.0f);
 
     /* Creates an animation with an array of CCAnimationFrame, the delay per units in seconds and and how many times it should be executed.
      @since v2.0
      */
     static CCAnimation* create(CCArray *arrayOfAnimationFrameNames, float delayPerUnit, unsigned int loops);
-    static CCAnimation* create(CCArray *arrayOfAnimationFrameNames, float delayPerUnit) {
-        return CCAnimation::create(arrayOfAnimationFrameNames, delayPerUnit, 1);
-    }
 
     /** Adds a CCSpriteFrame to a CCAnimation.
      The frame will be added with one "delay unit".
@@ -145,7 +131,6 @@ public:
     /** Adds a frame with an image filename. Internally it will create a CCSpriteFrame and it will add it.
      The frame will be added with one "delay unit".
      Added to facilitate the migration from v0.8 to v0.9.
-     * @js addSpriteFrameWithFile
      */  
     void addSpriteFrameWithFileName(const char *pszFileName);
 
@@ -154,45 +139,38 @@ public:
      Added to facilitate the migration from v0.8 to v0.9.
      */
     void addSpriteFrameWithTexture(CCTexture2D* pobTexture, const CCRect& rect);
-    /**
-     * @lua NA
-     */
+
     bool init();
 
     /** Initializes a CCAnimation with frames and a delay between frames
-     @since v0.99.5
-     @lua NA
+    @since v0.99.5
     */
     bool initWithSpriteFrames(CCArray *pFrames, float delay = 0.0f);
 
     /** Initializes a CCAnimation with CCAnimationFrame
-     @since v2.0
-     @lua NA
+    @since v2.0
     */
     bool initWithAnimationFrames(CCArray* arrayOfAnimationFrames, float delayPerUnit, unsigned int loops);
-    /**
-     * @js NA
-     * @lua NA
-     */
+
     virtual CCObject* copyWithZone(CCZone* pZone);
 
     /** total Delay units of the CCAnimation. */
-    ROB_CC_SYNTHESIZE_READONLY(float, m_fTotalDelayUnits, TotalDelayUnits) 
+    CC_SYNTHESIZE_READONLY(float, m_fTotalDelayUnits, TotalDelayUnits)
 
     /** Delay in seconds of the "delay unit" */
-    ROB_CC_SYNTHESIZE(float, m_fDelayPerUnit, DelayPerUnit)
+    CC_SYNTHESIZE(float, m_fDelayPerUnit, DelayPerUnit)
 
     /** duration in seconds of the whole animation. It is the result of totalDelayUnits * delayPerUnit */
     CC_PROPERTY_READONLY(float, m_fDuration, Duration)
 
     /** array of CCAnimationFrames */
-    ROB_CC_SYNTHESIZE_RETAIN(CCArray*, m_pFrames, Frames)
+    CC_SYNTHESIZE_RETAIN(CCArray*, m_pFrames, Frames)
 
     /** whether or not it shall restore the original frame when the animation finishes */
-    ROB_CC_SYNTHESIZE(bool, m_bRestoreOriginalFrame, RestoreOriginalFrame)
+    CC_SYNTHESIZE(bool, m_bRestoreOriginalFrame, RestoreOriginalFrame)
 
     /** how many times the animation is going to loop. 0 means animation is not animated. 1, animation is executed one time, ... */
-    ROB_CC_SYNTHESIZE(unsigned int, m_uLoops, Loops)
+    CC_SYNTHESIZE(unsigned int, m_uLoops, Loops)
 };
 
 // end of sprite_nodes group

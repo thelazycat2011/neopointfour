@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2011      Zynga Inc.
 
 http://www.cocos2d-x.org
@@ -54,9 +54,6 @@ extern CC_DLL const GLchar * ccPositionTextureColorAlphaTest_frag;
 
 extern CC_DLL const GLchar * ccPositionTexture_uColor_frag;
 extern CC_DLL const GLchar * ccPositionTexture_uColor_vert;
-
-extern CC_DLL const GLchar * ccPositionColorLengthTexture_frag;
-extern CC_DLL const GLchar * ccPositionColorLengthTexture_vert;
 
 extern CC_DLL const GLchar * ccExSwitchMask_frag;
 

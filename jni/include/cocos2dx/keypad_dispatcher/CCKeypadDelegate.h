@@ -33,8 +33,6 @@ NS_CC_BEGIN
 /**
  * @addtogroup input
  * @{
- * @js NA
- * @lua NA
  */
 
 class CC_DLL CCKeypadDelegate
@@ -43,17 +41,15 @@ public:
     // The back key clicked
     virtual void keyBackClicked() {}
 
-    // The menu key clicked. only available on wophone & android
+    // The menu key clicked. only avialble on wophone & android
     virtual void keyMenuClicked() {};
 };
 
 /**
- * @brief
- * CCKeypadHandler
- * Object than contains the CCKeypadDelegate.
- * @js NA
- * @lua NA
- */
+@brief
+CCKeypadHandler
+Object than contains the CCKeypadDelegate.
+*/
 class CC_DLL CCKeypadHandler : public CCObject
 {
 public:

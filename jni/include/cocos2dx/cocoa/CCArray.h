@@ -33,7 +33,7 @@ THE SOFTWARE.
  */
 
 /** @def CCARRAY_FOREACH
-A convenience macro to iterate over a CCArray using. It is faster than the "fast enumeration" interface.
+A convience macro to iterate over a CCArray using. It is faster than the "fast enumeration" interface.
 @since v0.99.4
 */
 
@@ -48,25 +48,25 @@ __arr__++)
 
 I found that it's not work in C++. So it keep what it's look like in version 1.0.0-rc3. ---By Bin
 */
-#define CCARRAY_FOREACH(__array__, __object__)                                                                         \
-    if ((__array__) && (__array__)->data->num > 0)                                                                     \
-    for(CCObject** __arr__ = (__array__)->data->arr, **__end__ = (__array__)->data->arr + (__array__)->data->num-1;    \
-    __arr__ <= __end__ && (((__object__) = *__arr__) != NULL/* || true*/);                                             \
-    __arr__++)
+#define CCARRAY_FOREACH(__array__, __object__)                                                                \
+    if ((__array__) && (__array__)->data->num > 0)                                                            \
+    for(CCObject** arr = (__array__)->data->arr, **end = (__array__)->data->arr + (__array__)->data->num-1;    \
+    arr <= end && (((__object__) = *arr) != NULL/* || true*/);                                                \
+    arr++)
 
-#define CCARRAY_FOREACH_REVERSE(__array__, __object__)                                                                  \
-    if ((__array__) && (__array__)->data->num > 0)                                                                      \
-    for(CCObject** __arr__ = (__array__)->data->arr + (__array__)->data->num-1, **__end__ = (__array__)->data->arr;     \
-    __arr__ >= __end__ && (((__object__) = *__arr__) != NULL/* || true*/);                                              \
-    __arr__--)
+#define CCARRAY_FOREACH_REVERSE(__array__, __object__)                                                      \
+    if ((__array__) && (__array__)->data->num > 0)                                                          \
+    for(CCObject** arr = (__array__)->data->arr + (__array__)->data->num-1, **end = (__array__)->data->arr; \
+    arr >= end && (((__object__) = *arr) != NULL/* || true*/);                                              \
+    arr--)
 
 #if defined(COCOS2D_DEBUG) && (COCOS2D_DEBUG > 0)
-#define CCARRAY_VERIFY_TYPE(__array__, __type__)                                                                 \
-    do {                                                                                                         \
-        if ((__array__) && (__array__)->data->num > 0)                                                           \
-            for(CCObject** __arr__ = (__array__)->data->arr,                                                     \
-                **__end__ = (__array__)->data->arr + (__array__)->data->num-1; __arr__ <= __end__; __arr__++)    \
-                CCAssert(dynamic_cast<__type__>(*__arr__), "element type is wrong!");                            \
+#define CCARRAY_VERIFY_TYPE(__array__, __type__)                                                  \
+    do {                                                                                          \
+        if ((__array__) && (__array__)->data->num > 0)                                              \
+            for(CCObject** arr = (__array__)->data->arr,                                          \
+                **end = (__array__)->data->arr + (__array__)->data->num-1; arr <= end; arr++)     \
+                CCAssert(dynamic_cast<__type__>(*arr), "element type is wrong!");                 \
     } while(false)
 #else
 #define CCARRAY_VERIFY_TYPE(__array__, __type__) void(0)
@@ -108,72 +108,90 @@ while(false)
 
 
 NS_CC_BEGIN
-/**
- * @js NA
- */
+
 class CC_DLL CCArray : public CCObject
 {
 public:
-    /**
-     * @lua NA
-     */
     ~CCArray();
+
+    /* static functions */
+    /** Create an array 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCArray* array();
+    /** Create an array with one object 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCArray* arrayWithObject(CCObject* pObject);
+    /** Create an array with some objects 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCArray* arrayWithObjects(CCObject* pObject, ...);
+    /** Create an array with capacity 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCArray* arrayWithCapacity(unsigned int capacity);
+    /** Create an array with an existing array
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCArray* arrayWithArray(CCArray* otherArray);
+    /**
+     @brief   Generate a CCArray pointer by file
+     @param   pFileName  The file name of *.plist file
+     @return  The CCArray pointer generated from the file
+     @deprecated: This interface will be deprecated sooner or later.
+     */
+     CC_DEPRECATED_ATTRIBUTE static CCArray* arrayWithContentsOfFile(const char* pFileName);
+    
+    /*
+     @brief The same meaning as arrayWithContentsOfFile(), but it doesn't call autorelease, so the
+     invoker should call release().
+     @deprecated: This interface will be deprecated sooner or later.
+     */
+    CC_DEPRECATED_ATTRIBUTE static CCArray* arrayWithContentsOfFileThreadSafe(const char* pFileName);
 
     /** Create an array */
     static CCArray* create();
-    /** Create an array with some objects 
-     *  @lua NA
-     */
-    static CCArray* create(CCObject* pObject, ...);
     /** Create an array with one object */
     static CCArray* createWithObject(CCObject* pObject);
+    /** Create an array with some objects */
+    static CCArray* create(CCObject* pObject, ...);
     /** Create an array with capacity */
-    static CCArray* createWithCapacity(unsigned int capacity);
+    static CCArray* create(unsigned int capacity);
     /** Create an array with an existing array */
-    static CCArray* createWithArray(CCArray* otherArray);
+    static CCArray* create(CCArray* otherArray);
     /**
      @brief   Generate a CCArray pointer by file
      @param   pFileName  The file name of *.plist file
      @return  The CCArray pointer generated from the file
      */
-    static CCArray* createWithContentsOfFile(const char* pFileName);
+    static CCArray* create(const char* pFileName);
     
     /*
      @brief The same meaning as arrayWithContentsOfFile(), but it doesn't call autorelease, so the
      invoker should call release().
-     @lua NA
      */
     static CCArray* createWithContentsOfFileThreadSafe(const char* pFileName);
 
-    /** Initializes an array 
-     *  @lua NA
-     */
+    /** Initializes an array */
     bool init();
-    /** Initializes an array with one object
-     *  @lua NA
-     */
+    /** Initializes an array with one object */
     bool initWithObject(CCObject* pObject);
-    /** Initializes an array with some objects 
-     *  @lua NA
-     */
+    /** Initializes an array with some objects */
     bool initWithObjects(CCObject* pObject, ...);
-    /** Initializes an array with capacity 
-     *  @lua NA
-     */
+    /** Initializes an array with capacity */
     bool initWithCapacity(unsigned int capacity);
-    /** Initializes an array with an existing array 
-     *  @lua NA
-     */
+    /** Initializes an array with an existing array */
     bool initWithArray(CCArray* otherArray);
 
     // Querying an Array
 
     /** Returns element count of the array */
-    unsigned int count() const;
+    unsigned int count();
     /** Returns capacity of the array */
-    unsigned int capacity() const;
+    unsigned int capacity();
     /** Returns index of a certain object, return UINT_MAX if doesn't contain the object */
-    unsigned int indexOfObject(CCObject* object) const;
+    unsigned int indexOfObject(CCObject* object);
     /** Returns an element with a certain index */
     CCObject* objectAtIndex(unsigned int index);
     /** Returns last element */
@@ -181,7 +199,7 @@ public:
     /** Returns a random element */
     CCObject* randomObject();
     /** Returns a Boolean value that indicates whether object is present in array. */
-    bool containsObject(CCObject* object) const;
+    bool containsObject(CCObject* object);
     /** @since 1.1 */
     bool isEqualToArray(CCArray* pOtherArray);
     // Adding Objects
@@ -225,24 +243,12 @@ public:
     /* Shrinks the array so the memory footprint corresponds with the number of items */
     void reduceMemoryFootprint();
   
-    /** override functions 
-     *  @js NA
-     *  @lua NA
-     */
-    virtual CCObject* copyWithZone(CCZone* pZone);
-
     /* override functions */
-    virtual void acceptVisitor(CCDataVisitor &visitor);
+    virtual CCObject* copyWithZone(CCZone* pZone);
 
 public:
     ccArray* data;
-    /**
-     *  @lua NA
-     */
     CCArray();
-    /**
-     *  @lua NA
-     */
     CCArray(unsigned int capacity);
 };
 

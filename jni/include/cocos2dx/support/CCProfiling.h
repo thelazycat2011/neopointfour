@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2010      Stuart Carnie
 
 http://www.cocos2d-x.org
@@ -44,8 +44,6 @@ class CCProfilingTimer;
  cocos2d builtin profiler.
 
  To use it, enable set the CC_ENABLE_PROFILERS=1 in the ccConfig.h file
- *@js NA
- *@lua NA
  */
 
 class CC_DLL CCProfiler : public CCObject
@@ -67,34 +65,31 @@ public:
 
     CCDictionary* m_pActiveTimers;
 };
-/**
- *@js NA
- *@lua NA
- */
+
 class CCProfilingTimer : public CCObject
 {
 public:
-    CCProfilingTimer();
-    ~CCProfilingTimer();
     bool initWithName(const char* timerName);
+    ~CCProfilingTimer(void);
     const char* description(void);
-    struct cc_timeval* getStartTime(void) { return &m_sStartTime; };
+    inline struct cc_timeval * getStartTime(void) { return &m_sStartTime; };
+    inline void setAverageTime(double value) { m_dAverageTime = value; }
+    inline double getAverageTime(void) { return m_dAverageTime; }
     /** resets the timer properties */
     void reset();
 
     std::string m_NameStr;
-    int               numberOfCalls;
-    int               m_dAverageTime1;
-    int               m_dAverageTime2;
-    long long         totalTime;
-    int               minTime;
-    int               maxTime;
     struct cc_timeval m_sStartTime;
+    double m_dAverageTime;
+    double            minTime;
+    double            maxTime;
+    double            totalTime;
+    unsigned int    numberOfCalls;
 };
 
-extern CC_DLL void CCProfilingBeginTimingBlock(const char *timerName);
-extern CC_DLL void CCProfilingEndTimingBlock(const char *timerName);
-extern CC_DLL void CCProfilingResetTimingBlock(const char *timerName);
+extern void CCProfilingBeginTimingBlock(const char *timerName);
+extern void CCProfilingEndTimingBlock(const char *timerName);
+extern void CCProfilingResetTimingBlock(const char *timerName);
 
 /*
  * cocos2d profiling categories

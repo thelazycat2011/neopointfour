@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2009      Sindesso Pty Ltd http://www.sindesso.com/
 
 http://www.cocos2d-x.org
@@ -49,9 +49,12 @@ public:
     virtual void update(float time);
 
 public:
-
+    /** create the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCPageTurn3D* actionWithSize(const ccGridSize& gridSize, float time);
     /** create the action */
-    static CCPageTurn3D* create(float duration, const CCSize& gridSize);
+    static CCPageTurn3D* create(const ccGridSize& gridSize, float time);
 };
 
 // end of actions group

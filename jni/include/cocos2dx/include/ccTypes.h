@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2008-2010 Ricardo Quesada
 Copyright (c) 2011      Zynga Inc.
 
@@ -27,10 +27,8 @@ THE SOFTWARE.
 #ifndef __CCTYPES_H__
 #define __CCTYPES_H__
 
-#include <string>
 #include "cocoa/CCGeometry.h"
 #include "CCGL.h"
-
 
 NS_CC_BEGIN
 
@@ -39,8 +37,8 @@ NS_CC_BEGIN
  */
 typedef struct _ccColor3B
 {
-    GLubyte r;
-    GLubyte g;
+    GLubyte    r;
+    GLubyte    g;
     GLubyte b;
 } ccColor3B;
 
@@ -51,14 +49,6 @@ ccc3(const GLubyte r, const GLubyte g, const GLubyte b)
     ccColor3B c = {r, g, b};
     return c;
 }
-
-/** returns true if both ccColor3B are equal. Otherwise it returns false.
- */
-static inline bool ccc3BEqual(const ccColor3B &col1, const ccColor3B &col2)
-{
-    return col1.r == col2.r && col1.g == col2.g && col1.b == col2.b;
-}
-
 //ccColor3B predefined colors
 //! White color (255,255,255)
 static const ccColor3B ccWHITE={255,255,255};
@@ -133,12 +123,6 @@ static inline ccColor4F ccc4FFromccc4B(ccColor4B c)
 {
     ccColor4F c4 = {c.r/255.f, c.g/255.f, c.b/255.f, c.a/255.f};
     return c4;
-}
-
-static inline ccColor4B ccc4BFromccc4F(ccColor4F c)
-{
-    ccColor4B ret = {(GLubyte)(c.r*255), (GLubyte)(c.g*255), (GLubyte)(c.b*255), (GLubyte)(c.a*255)};
-	return ret;
 }
 
 /** returns YES if both ccColor4F are equal. Otherwise it returns NO.
@@ -221,6 +205,21 @@ typedef struct _ccQuad3 {
     ccVertex3F        tr;
 } ccQuad3;
 
+//! A 2D grid size
+typedef struct _ccGridSize
+{
+    int    x;
+    int    y;
+} ccGridSize;
+
+//! helper function to create a ccGridSize
+static inline ccGridSize
+ccg(const int x, const int y)
+{
+    ccGridSize v = {x, y};
+    return v;
+}
+
 //! a Point with a vertex point, a tex coord point and a color 4B
 typedef struct _ccV2F_C4B_T2F
 {
@@ -255,21 +254,10 @@ typedef struct _ccV3F_C4B_T2F
 //    char __padding2__[4];
 
     // tex coords (2F)
-    ccTex2F            texCoords;            // 8 bytes
+    ccTex2F            texCoords;            // 8 byts
 } ccV3F_C4B_T2F;
 
-//! A Triangle of ccV2F_C4B_T2F
-typedef struct _ccV2F_C4B_T2F_Triangle
-{
-	//! Point A
-	ccV2F_C4B_T2F a;
-	//! Point B
-	ccV2F_C4B_T2F b;
-	//! Point B
-	ccV2F_C4B_T2F c;
-} ccV2F_C4B_T2F_Triangle;
-
-//! A Quad of ccV2F_C4B_T2F
+//! 4 ccVertex2FTex2FColor4B Quad
 typedef struct _ccV2F_C4B_T2F_Quad
 {
     //! bottom left
@@ -317,9 +305,23 @@ typedef struct _ccBlendFunc
     GLenum dst;
 } ccBlendFunc;
 
-static const ccBlendFunc kCCBlendFuncDisable = {GL_ONE, GL_ZERO};
+//! ccResolutionType
+typedef enum
+{
+    //! Unknonw resolution type
+    kCCResolutionUnknown,
+    //! iPhone resolution type
+    kCCResolutioniPhone,
+    //! RetinaDisplay resolution type
+    kCCResolutioniPhoneRetinaDisplay,
+    //! iPad resolution type
+    kCCResolutioniPad,
+    //! iPad Retina Display resolution type
+    kCCResolutioniPadRetinaDisplay,
+    
+} ccResolutionType;
 
-// XXX: If any of these enums are edited and/or reordered, update CCTexture2D.m
+// XXX: If any of these enums are edited and/or reordered, udpate CCTexture2D.m
 //! Vertical text alignment type
 typedef enum
 {
@@ -328,7 +330,7 @@ typedef enum
     kCCVerticalTextAlignmentBottom,
 } CCVerticalTextAlignment;
 
-// XXX: If any of these enums are edited and/or reordered, update CCTexture2D.m
+// XXX: If any of these enums are edited and/or reordered, udpate CCTexture2D.m
 //! Horizontal text alignment type
 typedef enum
 {
@@ -359,82 +361,6 @@ typedef struct
     float delay;
     CCSize size; 
 } ccAnimationFrameData;
-
-
-
-/**
- types used for defining fonts properties (i.e. font name, size, stroke or shadow)
- */
-
-// shadow attributes
-typedef struct _ccFontShadow
-{
-public:
-    
-    // shadow is not enabled by default
-    _ccFontShadow(): m_shadowEnabled(false) {}
-    
-    // true if shadow enabled
-    bool   m_shadowEnabled;
-    // shadow x and y offset
-	CCSize m_shadowOffset;
-    // shadow blurrines
-	float  m_shadowBlur;
-    // shadow opacity
-	float  m_shadowOpacity;
-    
-} ccFontShadow;
-
-// stroke attributes
-typedef struct _ccFontStroke
-{
-public:
-    
-    // stroke is disabled by default
-    _ccFontStroke(): m_strokeEnabled(false) {}
-    
-    // true if stroke enabled
-    bool        m_strokeEnabled;
-    // stroke color
-	ccColor3B   m_strokeColor;
-    // stroke size
-    float       m_strokeSize;
-    
-} ccFontStroke;
-
-// font attributes
-/**
- *  @js NA
- *  @lua NA
- */
-typedef struct _ccFontDefinition
-{
-public:
-    
-    _ccFontDefinition():  m_alignment(kCCTextAlignmentCenter),
-    m_vertAlignment(kCCVerticalTextAlignmentTop),
-    m_fontFillColor(ccWHITE)
-    { m_dimensions = CCSizeMake(0,0); }
-    
-    // font name
-    std::string             m_fontName;
-    // font size
-    int                     m_fontSize;
-    // horizontal alignment
-    CCTextAlignment         m_alignment;
-    // vertical alignment
-    CCVerticalTextAlignment m_vertAlignment;
-    // renering box
-    CCSize                  m_dimensions;
-    // font color
-    ccColor3B               m_fontFillColor;
-    // font shadow
-    ccFontShadow            m_shadow;
-    // font stroke
-    ccFontStroke            m_stroke;
-    
-} ccFontDefinition;
-
 
 NS_CC_END
 

@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2009      Valentin Milea
 
 http://www.cocos2d-x.org
@@ -41,8 +41,6 @@ NS_CC_BEGIN
 /**
  CCTouchHandler
  Object than contains the delegate and priority of the event handler.
- @js NA
- @lua NA
 */
 class CC_DLL  CCTouchHandler : public CCObject
 {
@@ -75,9 +73,7 @@ protected:
 };
 
 /** CCStandardTouchHandler
- It forwards each event to the delegate.
- @js NA
- @lua NA
+ It forwardes each event to the delegate.
  */
 class CC_DLL  CCStandardTouchHandler : public CCTouchHandler
 {
@@ -92,10 +88,8 @@ public:
 
 /**
  CCTargetedTouchHandler
- Object than contains the claimed touches and if it swallows touches.
+ Object than contains the claimed touches and if it swallos touches.
  Used internally by TouchDispatcher
- @js NA
- @lua NA
  */
 class CC_DLL  CCTargetedTouchHandler : public CCTouchHandler
 {

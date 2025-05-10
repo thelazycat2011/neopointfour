@@ -36,15 +36,13 @@ NS_CC_BEGIN
 
 typedef struct
 {
-    CCRect  begin;              // the soft keyboard rectangle when animation begins
-    CCRect  end;                // the soft keyboard rectangle when animation ends
+    CCRect  begin;              // the soft keyboard rectangle when animatin begin
+    CCRect  end;                // the soft keyboard rectangle when animatin end
     float     duration;           // the soft keyboard animation duration
 } CCIMEKeyboardNotificationInfo;
 
 /**
 @brief    Input method editor delegate.
-@js NA
-@lua NA
 */
 class CC_DLL CCIMEDelegate
 {
@@ -58,38 +56,38 @@ protected:
     friend class CCIMEDispatcher;
 
     /**
-    @brief    Decide if the delegate instance is ready to receive an IME message.
+    @brief    Decide the delegate instance is ready for receive ime message or not.
 
     Called by CCIMEDispatcher.
     */
     virtual bool canAttachWithIME() { return false; }
     /**
-    @brief    When the delegate detaches from the IME, this method is called by CCIMEDispatcher.
+    @brief    When the delegate detach with IME, this method call by CCIMEDispatcher.
     */
     virtual void didAttachWithIME() {}
 
     /**
-    @brief    Decide if the delegate instance can stop receiving IME messages.
+    @brief    Decide the delegate instance can stop receive ime message or not.
     */
     virtual bool canDetachWithIME() { return false; }
 
     /**
-    @brief    When the delegate detaches from the IME, this method is called by CCIMEDispatcher.
+    @brief    When the delegate detach with IME, this method call by CCIMEDispatcher.
     */
     virtual void didDetachWithIME() {}
 
     /**
-    @brief    Called by CCIMEDispatcher when text input received from the IME.
+    @brief    Called by CCIMEDispatcher when some text input from IME.
     */
     virtual void insertText(const char * text, int len) {CC_UNUSED_PARAM(text);CC_UNUSED_PARAM(len);}
 
     /**
-    @brief    Called by CCIMEDispatcher after the user clicks the backward key.
+    @brief    Called by CCIMEDispatcher when user clicked the backward key.
     */
     virtual void deleteBackward() {}
 
     /**
-    @brief    Called by CCIMEDispatcher for text stored in delegate.
+    @brief    Called by CCIMEDispatcher for get text which delegate already has.
     */
     virtual const char * getContentText() { return 0; }
 

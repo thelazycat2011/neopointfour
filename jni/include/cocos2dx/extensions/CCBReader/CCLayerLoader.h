@@ -7,11 +7,8 @@ NS_CC_EXT_BEGIN
 
 /* Forward declaration. */
 class CCBReader;
-/**
- *  @js NA
- *  @lua NA
- */
-class CCLayerLoader : public CCNodeLoader {
+
+class CC_DLL CCLayerLoader : public CCNodeLoader {
     public:
         virtual ~CCLayerLoader() {};
         CCB_STATIC_NEW_AUTORELEASE_OBJECT_METHOD(CCLayerLoader, loader);
@@ -19,7 +16,7 @@ class CCLayerLoader : public CCNodeLoader {
     protected:
         CCB_VIRTUAL_NEW_AUTORELEASE_CREATECCNODE_METHOD(CCLayer);
 
-        virtual void onHandlePropTypeCheck(CCNode * pNode, CCNode * pParent, const char * pPropertyName, bool pCheck, CCBReader * pCCBReader);
+        virtual void onHandlePropTypeCheck(CCNode * pNode, CCNode * pParent, CCString * pPropertyName, bool pCheck, CCBReader * pCCBReader);
 };
 
 NS_CC_EXT_END

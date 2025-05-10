@@ -2,25 +2,21 @@
 #define _CCB_CCCONTROLLOADER_H_
 
 #include "CCNodeLoader.h"
-#include "../GUI/CCControlExtension/CCControl.h"
 
 NS_CC_EXT_BEGIN
 
 /* Forward declaration. */
 class CCBReader;
-/**
- *  @js NA
- *  @lua NA
- */
-class CCControlLoader : public CCNodeLoader {
+
+class CC_DLL CCControlLoader : public CCNodeLoader {
     public:
         virtual ~CCControlLoader() {};
 
     protected:
         CCB_PURE_VIRTUAL_NEW_AUTORELEASE_CREATECCNODE_METHOD(CCControl);
 
-        virtual void onHandlePropTypeBlockCCControl(CCNode * pNode, CCNode * pParent, const char * pPropertyName, BlockCCControlData * pBlockCCControlData, CCBReader * pCCBReader);
-        virtual void onHandlePropTypeCheck(CCNode * pNode, CCNode * pParent, const char * pPropertyName, bool pCheck, CCBReader * pCCBReader);
+        virtual void onHandlePropTypeBlockCCControl(CCNode * pNode, CCNode * pParent, CCString * pPropertyName, BlockCCControlData * pBlockCCControlData, CCBReader * pCCBReader);
+        virtual void onHandlePropTypeCheck(CCNode * pNode, CCNode * pParent, CCString * pPropertyName, bool pCheck, CCBReader * pCCBReader);
 };
 
 NS_CC_EXT_END

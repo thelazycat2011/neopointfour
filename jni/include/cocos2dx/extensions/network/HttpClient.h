@@ -27,12 +27,14 @@
 #define __CCHTTPREQUEST_H__
 
 #include "cocos2d.h"
-#include "ExtensionMacros.h"
+//#include "ExtensionMacros.h"
 
 #include "HttpRequest.h"
 #include "HttpResponse.h"
 
 NS_CC_EXT_BEGIN
+
+typedef size_t (*write_callback)(void *ptr, size_t size, size_t nmemb, void *stream);
 
 /**
  * @addtogroup Network
@@ -42,10 +44,8 @@ NS_CC_EXT_BEGIN
 
 /** @brief Singleton that handles asynchrounous http requests
  * Once the request completed, a callback will issued in main thread when it provided during make request
- * @js NA
- * @lua NA
  */
-class CCHttpClient : public CCObject
+class CCHttpClient : public cocos2d::CCObject
 {
 public:
     /** Return the shared instance **/
@@ -57,7 +57,6 @@ public:
     /**
      * Add a get request to task queue
      * @param request a CCHttpRequest object, which includes url, response callback etc.
-                      please make sure request->_requestData is clear before calling "send" here.
      * @return NULL
      */
     void send(CCHttpRequest* request);
@@ -80,7 +79,7 @@ public:
     
     /**
      * Change the download timeout
-     * @param value
+     * @param timeout
      * @return NULL
      */
     inline void setTimeoutForRead(int value) {_timeoutForRead = value;};

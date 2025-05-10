@@ -46,20 +46,21 @@ public:
     inline float getAmplitudeRate(void) { return m_fAmplitudeRate; }
     inline void setAmplitudeRate(float fAmplitudeRate) { m_fAmplitudeRate = fAmplitudeRate; }
 
-    /** initializes an action with duration, grid size, waves and amplitude */
-    bool initWithDuration(float duration, const CCSize& gridSize, unsigned int waves, float amplitude);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+    /** init the action */
+    bool initWithWaves(int wav, float amp, const ccGridSize& gridSize, float duration);
+
     virtual CCObject* copyWithZone(CCZone* pZone);
     virtual void update(float time);
 
 public:
-    /** creates an action with duration, grid size, waves and amplitude */
-    static CCWaves3D* create(float duration, const CCSize& gridSize, unsigned int waves, float amplitude);
+    /** create the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCWaves3D* actionWithWaves(int wav, float amp, const ccGridSize& gridSize, float duration);
+    /** create the action */
+    static CCWaves3D* create(int wav, float amp, const ccGridSize& gridSize, float duration);
 protected:
-    unsigned int m_nWaves;
+    int m_nWaves;
     float m_fAmplitude;
     float m_fAmplitudeRate;
 };
@@ -69,16 +70,16 @@ class CC_DLL CCFlipX3D : public CCGrid3DAction
 {
 public:
     /** initializes the action with duration */
-    virtual bool initWithDuration(float duration);
-    virtual bool initWithSize(const CCSize& gridSize, float duration);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+    bool initWithDuration(float duration);
+    virtual bool initWithSize(const ccGridSize& gridSize, float duration);
     virtual CCObject* copyWithZone(CCZone* pZone);
     virtual void update(float time);
 
 public:
+    /** creates the action with duration 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCFlipX3D* actionWithDuration(float duration);
     /** creates the action with duration */
     static CCFlipX3D* create(float duration);
 };
@@ -88,13 +89,13 @@ class CC_DLL CCFlipY3D : public CCFlipX3D
 {
 public:
     virtual void update(float time);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
 
 public:
+    /** creates the action with duration 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCFlipY3D* actionWithDuration(float duration);
     /** creates the action with duration */
     static CCFlipY3D* create(float duration);
 };
@@ -107,32 +108,28 @@ public:
     inline float getLensEffect(void) { return m_fLensEffect; }
     /** Set lens center position */
     inline void setLensEffect(float fLensEffect) { m_fLensEffect = fLensEffect; }
-    /** Set whether lens is concave */
-    inline void setConcave(bool bConcave) { m_bConcave = bConcave; }
-  
+    
     inline const CCPoint& getPosition(void) { return m_position; }
     void setPosition(const CCPoint& position);
 
     /** initializes the action with center position, radius, a grid size and duration */
-    bool initWithDuration(float duration, const CCSize& gridSize, const CCPoint& position, float radius);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+    bool initWithPosition(const CCPoint& pos, float r, const ccGridSize& gridSize, float duration);
     virtual CCObject* copyWithZone(CCZone* pZone);
     virtual void update(float time);
 
 public:
+    /** creates the action with center position, radius, a grid size and duration 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCLens3D* actionWithPosition(const CCPoint& pos, float r, const ccGridSize& gridSize, float duration);
     /** creates the action with center position, radius, a grid size and duration */
-    static CCLens3D* create(float duration, const CCSize& gridSize, const CCPoint& position, float radius);
+    static CCLens3D* create(const CCPoint& pos, float r, const ccGridSize& gridSize, float duration);
 protected:
     /* lens center position */
     CCPoint m_position;
     float m_fRadius;
     /** lens effect. Defaults to 0.7 - 0 means no effect, 1 is very strong effect */
     float m_fLensEffect;
-    /** lens is concave. (true = concave, false = convex) default is convex i.e. false */
-    bool m_bConcave;
 
     bool    m_bDirty;
 };
@@ -153,22 +150,25 @@ public:
     inline void setAmplitudeRate(float fAmplitudeRate) { m_fAmplitudeRate = fAmplitudeRate; }
 
     /** initializes the action with radius, number of waves, amplitude, a grid size and duration */
-    bool initWithDuration(float duration, const CCSize& gridSize, const CCPoint& position, float radius, unsigned int waves, float amplitude);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+    bool initWithPosition(const CCPoint& pos, float r, int wav, float amp, 
+        const ccGridSize& gridSize, float duration);
     virtual CCObject* copyWithZone(CCZone* pZone);
     virtual void update(float time);
 
 public:
+    /** creates the action with radius, number of waves, amplitude, a grid size and duration 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCRipple3D* actionWithPosition(const CCPoint& pos, float r, int wav, float amp, 
+        const ccGridSize& gridSize, float duration);
     /** creates the action with radius, number of waves, amplitude, a grid size and duration */
-    static CCRipple3D* create(float duration, const CCSize& gridSize, const CCPoint& position, float radius, unsigned int waves, float amplitude);
+    static CCRipple3D* create(const CCPoint& pos, float r, int wav, float amp, 
+        const ccGridSize& gridSize, float duration);
 protected:
     /* center position */
     CCPoint m_position;
     float m_fRadius;
-    unsigned int m_nWaves;
+    int m_nWaves;
     float m_fAmplitude;
     float m_fAmplitudeRate;
 };
@@ -178,17 +178,17 @@ class CC_DLL CCShaky3D : public CCGrid3DAction
 {
 public:
     /** initializes the action with a range, shake Z vertices, a grid and duration */
-    bool initWithDuration(float duration, const CCSize& gridSize, int range, bool shakeZ);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+    bool initWithRange(int range, bool shakeZ, const ccGridSize& gridSize, float duration);
     virtual CCObject* copyWithZone(CCZone* pZone);
     virtual void update(float time);
 
 public:
+    /** creates the action with a range, shake Z vertices, a grid and duration 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCShaky3D* actionWithRange(int range, bool shakeZ, const ccGridSize& gridSize, float duration);
     /** creates the action with a range, shake Z vertices, a grid and duration */
-    static CCShaky3D* create(float duration, const CCSize& gridSize, int range, bool shakeZ);
+    static CCShaky3D* create(int range, bool shakeZ, const ccGridSize& gridSize, float duration);
 protected:
     int m_nRandrange;
     bool m_bShakeZ;
@@ -205,19 +205,19 @@ public:
     inline void setAmplitudeRate(float fAmplitudeRate) { m_fAmplitudeRate = fAmplitudeRate; }
 
     /** initializes the action with amplitude, a grid and duration */
-    bool initWithDuration(float duration, const CCSize& gridSize, unsigned int waves, float amplitude);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+    bool initWithWaves(int wav, float amp, const ccGridSize& gridSize, float duration);
     virtual CCObject* copyWithZone(CCZone* pZone);
     virtual void update(float time);
 
 public:
+    /** creates the action with amplitude, a grid and duration 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCLiquid* actionWithWaves(int wav, float amp, const ccGridSize& gridSize, float duration);
     /** creates the action with amplitude, a grid and duration */
-    static CCLiquid* create(float duration, const CCSize& gridSize, unsigned int waves, float amplitude);
+    static CCLiquid* create(int wav, float amp, const ccGridSize& gridSize, float duration);
 protected:
-    unsigned int m_nWaves;
+    int m_nWaves;
     float m_fAmplitude;
     float m_fAmplitudeRate;
 };
@@ -233,20 +233,23 @@ public:
     inline void setAmplitudeRate(float fAmplitudeRate) { m_fAmplitudeRate = fAmplitudeRate; }
 
     /** initializes the action with amplitude, horizontal sin, vertical sin, a grid and duration */
-    bool initWithDuration(float duration, const CCSize& gridSize, unsigned int waves, float amplitude, bool horizontal, bool vertical);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+    bool initWithWaves(int wav, float amp, bool h, bool v, const ccGridSize& gridSize,
+        float duration);
     virtual CCObject* copyWithZone(CCZone* pZone);
     virtual void update(float time);
 
 public:
+    /** initializes the action with amplitude, horizontal sin, vertical sin, a grid and duration 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCWaves* actionWithWaves(int wav, float amp, bool h, bool v, const ccGridSize& gridSize,
+         float duration);
 
     /** initializes the action with amplitude, horizontal sin, vertical sin, a grid and duration */
-    static CCWaves* create(float duration, const CCSize& gridSize, unsigned int waves, float amplitude, bool horizontal, bool vertical);
+    static CCWaves* create(int wav, float amp, bool h, bool v, const ccGridSize& gridSize,
+        float duration);
 protected:
-    unsigned int m_nWaves;
+    int m_nWaves;
     float m_fAmplitude;
     float m_fAmplitudeRate;
     bool m_bVertical;
@@ -269,21 +272,25 @@ public:
     inline void setAmplitudeRate(float fAmplitudeRate) { m_fAmplitudeRate = fAmplitudeRate; }
 
     /** initializes the action with center position, number of twirls, amplitude, a grid size and duration */
-    bool initWithDuration(float duration, const CCSize& gridSize, CCPoint position, unsigned int twirls, float amplitude);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+    bool initWithPosition(const CCPoint& pos, int t, float amp, const ccGridSize& gridSize,
+        float duration);
     virtual CCObject* copyWithZone(CCZone* pZone);
     virtual void update(float time);
 
 public:
+    /** creates the action with center position, number of twirls, amplitude, a grid size and duration 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCTwirl* actionWithPosition(CCPoint pos, int t, float amp, const ccGridSize& gridSize,
+         float duration);
+
     /** creates the action with center position, number of twirls, amplitude, a grid size and duration */
-    static CCTwirl* create(float duration, const CCSize& gridSize, CCPoint position, unsigned int twirls, float amplitude);
+    static CCTwirl* create(CCPoint pos, int t, float amp, const ccGridSize& gridSize,
+        float duration);
 protected:
     /* twirl center */
     CCPoint m_position;
-    unsigned int m_nTwirls;
+    int m_nTwirls;
     float m_fAmplitude;
     float m_fAmplitudeRate;
 };

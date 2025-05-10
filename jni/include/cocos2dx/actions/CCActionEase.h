@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2010-2011 cocos2d-x.org
 Copyright (c) 2008-2009 Jason Booth
 
 http://www.cocos2d-x.org
@@ -45,33 +45,28 @@ class CCZone;
 class CC_DLL CCActionEase : public CCActionInterval
 {
 public:
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCActionEase(void);
 
     /** initializes the action */
     bool initWithAction(CCActionInterval *pAction);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+
     virtual CCObject* copyWithZone(CCZone* pZone);
     virtual void startWithTarget(CCNode *pTarget);
     virtual void stop(void);
     virtual void update(float time);
     virtual CCActionInterval* reverse(void);
-    virtual CCActionInterval* getInnerAction();
 
 public:
+    /** creates the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCActionEase* actionWithAction(CCActionInterval *pAction);
 
     /** creates the action */
     static CCActionEase* create(CCActionInterval *pAction);
 
 protected:
-    /** The inner action */
-    CCActionInterval *m_pInner;
+    CCActionInterval *m_pOther;
 };
 
 /** 
@@ -81,10 +76,6 @@ protected:
 class CC_DLL CCEaseRateAction : public CCActionEase
 {
 public:
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual ~CCEaseRateAction(void);
 
     /** set rate value for the actions */
@@ -94,14 +85,15 @@ public:
 
     /** Initializes the action with the inner action and the rate parameter */
     bool initWithAction(CCActionInterval *pAction, float fRate);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
+
     virtual CCObject* copyWithZone(CCZone* pZone);
     virtual CCActionInterval* reverse(void);
 
 public:
+    /** Creates the action with the inner action and the rate parameter 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCEaseRateAction* actionWithAction(CCActionInterval* pAction, float fRate);
 
     /** Creates the action with the inner action and the rate parameter */
     static CCEaseRateAction* create(CCActionInterval* pAction, float fRate);
@@ -119,12 +111,12 @@ class CC_DLL CCEaseIn : public CCEaseRateAction
 public:
     virtual void update(float time);
     virtual CCActionInterval* reverse(void);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
 public:
+    /** Creates the action with the inner action and the rate parameter 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCEaseIn* actionWithAction(CCActionInterval* pAction, float fRate);
 
     /** Creates the action with the inner action and the rate parameter */
     static CCEaseIn* create(CCActionInterval* pAction, float fRate);
@@ -139,13 +131,13 @@ class CC_DLL CCEaseOut : public CCEaseRateAction
 public:
     virtual void update(float time);
     virtual CCActionInterval* reverse();
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
 
 public:
+    /** Creates the action with the inner action and the rate parameter
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCEaseOut* actionWithAction(CCActionInterval* pAction, float fRate);
 
     /** Creates the action with the inner action and the rate parameter */
     static CCEaseOut* create(CCActionInterval* pAction, float fRate);
@@ -159,14 +151,14 @@ class CC_DLL CCEaseInOut : public CCEaseRateAction
 {
 public:
     virtual void update(float time);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
     virtual CCActionInterval* reverse(void);
 
 public:
+    /** Creates the action with the inner action and the rate parameter 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCEaseInOut* actionWithAction(CCActionInterval* pAction, float fRate);
 
     /** Creates the action with the inner action and the rate parameter */
     static CCEaseInOut* create(CCActionInterval* pAction, float fRate);
@@ -181,13 +173,13 @@ class CC_DLL CCEaseExponentialIn : public CCActionEase
 public:
     virtual void update(float time);
     virtual CCActionInterval* reverse(void);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
 
 public:
+    /** creates the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCEaseExponentialIn* actionWithAction(CCActionInterval* pAction);
     /** creates the action */
     static CCEaseExponentialIn* create(CCActionInterval* pAction);
 };
@@ -201,13 +193,13 @@ class CC_DLL CCEaseExponentialOut : public CCActionEase
 public:
     virtual void update(float time);
     virtual CCActionInterval* reverse(void);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
 
 public:
+    /** creates the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCEaseExponentialOut* actionWithAction(CCActionInterval* pAction);
     /** creates the action */
     static CCEaseExponentialOut* create(CCActionInterval* pAction);
 };
@@ -220,14 +212,14 @@ class CC_DLL CCEaseExponentialInOut : public CCActionEase
 {
 public:
     virtual void update(float time);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
     virtual CCActionInterval* reverse();
 
 public:
+    /** creates the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCEaseExponentialInOut* actionWithAction(CCActionInterval* pAction);
 
     /** creates the action */
     static CCEaseExponentialInOut* create(CCActionInterval* pAction);
@@ -242,13 +234,13 @@ class CC_DLL CCEaseSineIn : public CCActionEase
 public:
     virtual void update(float time);
     virtual CCActionInterval* reverse(void);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
 
 public:
+    /** creates the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCEaseSineIn* actionWithAction(CCActionInterval* pAction);
     /** creates the action */
     static CCEaseSineIn* create(CCActionInterval* pAction);
 };
@@ -262,14 +254,13 @@ class CC_DLL CCEaseSineOut : public CCActionEase
 public:
     virtual void update(float time);
     virtual CCActionInterval* reverse(void);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
 
 public:
-
+    /** creates the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCEaseSineOut* actionWithAction(CCActionInterval* pAction);
     /** creates the action */
     static CCEaseSineOut* create(CCActionInterval* pAction);
 };
@@ -282,15 +273,14 @@ class CC_DLL CCEaseSineInOut : public CCActionEase
 {
 public:
     virtual void update(float time);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
     virtual CCActionInterval* reverse();
 
 public:
-
+    /** creates the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCEaseSineInOut* actionWithAction(CCActionInterval* pAction);
     /** creates the action */
     static CCEaseSineInOut* create(CCActionInterval* pAction);
 };
@@ -312,24 +302,22 @@ public:
     bool initWithAction(CCActionInterval *pAction, float fPeriod = 0.3f);
 
     virtual CCActionInterval* reverse(void);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
 
 public:
-
+    /** Creates the action with the inner action and the period in radians (default is 0.3) 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCEaseElastic* actionWithAction(CCActionInterval *pAction, float fPeriod = 0.3f);
     /** Creates the action with the inner action and the period in radians (default is 0.3) */
-    static CCEaseElastic* create(CCActionInterval *pAction, float fPeriod);
-    static CCEaseElastic* create(CCActionInterval *pAction);
+    static CCEaseElastic* create(CCActionInterval *pAction, float fPeriod = 0.3f);
 protected:
     float m_fPeriod;
 };
 
 /** 
  @brief Ease Elastic In action.
- @warning This action doesn't use a bijective function. Actions like Sequence might have an unexpected result when used with this action.
+ @warning This action doesn't use a bijective fucntion. Actions like Sequence might have an unexpected result when used with this action.
  @since v0.8.2
  @ingroup Actions
  */
@@ -338,22 +326,20 @@ class CC_DLL CCEaseElasticIn : public CCEaseElastic
 public:
     virtual void update(float time);
     virtual CCActionInterval* reverse(void);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
 
 public:
-
+    /** Creates the action with the inner action and the period in radians (default is 0.3) 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCEaseElasticIn* actionWithAction(CCActionInterval *pAction, float fPeriod = 0.3f);
     /** Creates the action with the inner action and the period in radians (default is 0.3) */
-    static CCEaseElasticIn* create(CCActionInterval *pAction, float fPeriod);
-    static CCEaseElasticIn* create(CCActionInterval *pAction);
+    static CCEaseElasticIn* create(CCActionInterval *pAction, float fPeriod = 0.3f);
 };
 
 /** 
  @brief Ease Elastic Out action.
- @warning This action doesn't use a bijective function. Actions like Sequence might have an unexpected result when used with this action.
+ @warning This action doesn't use a bijective fucntion. Actions like Sequence might have an unexpected result when used with this action.
  @since v0.8.2
  @ingroup Actions
  */
@@ -362,22 +348,21 @@ class CC_DLL CCEaseElasticOut : public CCEaseElastic
 public:
     virtual void update(float time);
     virtual CCActionInterval* reverse(void);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
 
 public:
+    /** Creates the action with the inner action and the period in radians (default is 0.3) 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCEaseElasticOut* actionWithAction(CCActionInterval *pAction, float fPeriod = 0.3f);
 
     /** Creates the action with the inner action and the period in radians (default is 0.3) */
-    static CCEaseElasticOut* create(CCActionInterval *pAction, float fPeriod);
-    static CCEaseElasticOut* create(CCActionInterval *pAction);
+    static CCEaseElasticOut* create(CCActionInterval *pAction, float fPeriod = 0.3f);
 };
 
 /** 
  @brief Ease Elastic InOut action.
- @warning This action doesn't use a bijective function. Actions like Sequence might have an unexpected result when used with this action.
+ @warning This action doesn't use a bijective fucntion. Actions like Sequence might have an unexpected result when used with this action.
  @since v0.8.2
  @ingroup Actions
  */
@@ -386,17 +371,16 @@ class CC_DLL CCEaseElasticInOut : public CCEaseElastic
 public:
     virtual void update(float time);
     virtual CCActionInterval* reverse(void);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
 
 public:
+    /** Creates the action with the inner action and the period in radians (default is 0.3) 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCEaseElasticInOut* actionWithAction(CCActionInterval *pAction, float fPeriod = 0.3f);
 
     /** Creates the action with the inner action and the period in radians (default is 0.3) */
-    static CCEaseElasticInOut* create(CCActionInterval *pAction, float fPeriod);
-    static CCEaseElasticInOut* create(CCActionInterval *pAction);
+    static CCEaseElasticInOut* create(CCActionInterval *pAction, float fPeriod = 0.3f);
 };
 
 /** 
@@ -408,15 +392,14 @@ class CC_DLL CCEaseBounce : public CCActionEase
 {
 public:
     float bounceTime(float time);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
     virtual CCActionInterval* reverse();
 
 public:
-
+    /** creates the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCEaseBounce* actionWithAction(CCActionInterval* pAction);
     /** creates the action */
     static CCEaseBounce* create(CCActionInterval* pAction);
 };
@@ -432,21 +415,20 @@ class CC_DLL CCEaseBounceIn : public CCEaseBounce
 public:
     virtual void update(float time);
     virtual CCActionInterval* reverse(void);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
 
 public:
-
+    /** creates the action
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCEaseBounceIn* actionWithAction(CCActionInterval* pAction);
     /** creates the action */
     static CCEaseBounceIn* create(CCActionInterval* pAction);
 };
 
 /** 
  @brief EaseBounceOut action.
- @warning This action doesn't use a bijective function. Actions like Sequence might have an unexpected result when used with this action.
+ @warning This action doesn't use a bijective fucntion. Actions like Sequence might have an unexpected result when used with this action.
  @since v0.8.2
  @ingroup Actions
  */
@@ -455,21 +437,20 @@ class CC_DLL CCEaseBounceOut : public CCEaseBounce
 public:
     virtual void update(float time);
     virtual CCActionInterval* reverse(void);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
 
 public:
-
+    /** creates the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCEaseBounceOut* actionWithAction(CCActionInterval* pAction);
     /** creates the action */
     static CCEaseBounceOut* create(CCActionInterval* pAction);
 };
 
 /** 
  @brief CCEaseBounceInOut action.
- @warning This action doesn't use a bijective function. Actions like Sequence might have an unexpected result when used with this action.
+ @warning This action doesn't use a bijective fucntion. Actions like Sequence might have an unexpected result when used with this action.
  @since v0.8.2
  @ingroup Actions
  */
@@ -477,22 +458,21 @@ class CC_DLL CCEaseBounceInOut : public CCEaseBounce
 {
 public:
     virtual void update(float time);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
     virtual CCActionInterval* reverse();
 
 public:
-
+    /** creates the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCEaseBounceInOut* actionWithAction(CCActionInterval* pAction);
     /** creates the action */
     static CCEaseBounceInOut* create(CCActionInterval* pAction);
 };
 
 /** 
  @brief CCEaseBackIn action.
- @warning This action doesn't use a bijective function. Actions like Sequence might have an unexpected result when used with this action.
+ @warning This action doesn't use a bijective fucntion. Actions like Sequence might have an unexpected result when used with this action.
  @since v0.8.2
  @ingroup Actions
  */
@@ -501,21 +481,20 @@ class CC_DLL CCEaseBackIn : public CCActionEase
 public:
     virtual void update(float time);
     virtual CCActionInterval* reverse(void);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
 
 public:
-
+    /** creates the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCEaseBackIn* actionWithAction(CCActionInterval* pAction);
     /** creates the action */
     static CCEaseBackIn* create(CCActionInterval* pAction);
 };
 
 /** 
  @brief CCEaseBackOut action.
- @warning This action doesn't use a bijective function. Actions like Sequence might have an unexpected result when used with this action.
+ @warning This action doesn't use a bijective fucntion. Actions like Sequence might have an unexpected result when used with this action.
  @since v0.8.2
  @ingroup Actions
  */
@@ -524,21 +503,20 @@ class CC_DLL CCEaseBackOut : public CCActionEase
 public:
     virtual void update(float time);
     virtual CCActionInterval* reverse(void);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
 
 public:
-
+    /** creates the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCEaseBackOut* actionWithAction(CCActionInterval* pAction);
     /** creates the action */
     static CCEaseBackOut* create(CCActionInterval* pAction);
 };
 
 /** 
  @brief CCEaseBackInOut action.
- @warning This action doesn't use a bijective function. Actions like Sequence might have an unexpected result when used with this action.
+ @warning This action doesn't use a bijective fucntion. Actions like Sequence might have an unexpected result when used with this action.
  @since v0.8.2
  @ingroup Actions
  */
@@ -546,15 +524,14 @@ class CC_DLL CCEaseBackInOut : public CCActionEase
 {
 public:
     virtual void update(float time);
-    /**
-     *  @js NA
-     *  @lua NA
-     */
     virtual CCObject* copyWithZone(CCZone* pZone);
     virtual CCActionInterval* reverse();
 
 public:
-
+    /** creates the action 
+    @deprecated: This interface will be deprecated sooner or later.
+    */
+    CC_DEPRECATED_ATTRIBUTE static CCEaseBackInOut* actionWithAction(CCActionInterval* pAction);
     /** creates the action */
     static CCEaseBackInOut* create(CCActionInterval* pAction);
 };

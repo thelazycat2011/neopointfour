@@ -51,6 +51,7 @@ public:
     bool equals(const Margin& target) const;
 };
 
+const Margin MarginZero = Margin();
 
 typedef enum
 {
