@@ -263,12 +263,19 @@ void ApplyPatches() {
   pm.cpatch(0x1544a4, SC);
   pm.cpatch(0x1544a8, SC);
   pm.cpatch(0x182f08, SC2);
-  pm.cpatch(0x1393b2, "00 BF");
-  pm.cpatch(0x15d758, "00 BF");
+  pm.cpatch(0x1393b2, "00 BF"); // Google Play button
+  pm.cpatch(0x15d758, "00 BF"); // Restart button
+  // Editor Patch
   pm.cpatch(0x15bcac, "00 00 00 00");
   pm.cpatch(0x15bcb4, "FF FF 7F 7F");
   pm.cpatch(0x1583dc, "00 00 00 00");
   pm.cpatch(0x1583e8, "FF FF 7F 7F");
+  // Practice music hack (have no idea but props to nikolyas)
+  pm.cpatch(0x13bb7d, "E0");
+  pm.cpatch(0x13bc3a, "AA");
+  pm.cpatch(0x13fec4, "00 BF");
+  pm.cpatch(0x140072, "00 BF 00 BF 00 BF 00 BF 00 BF 00 BF 00 BF 00 BF 00 BF 00 BF 00 BF");
+  pm.cpatch(0x20376c, "01 20 70 47");
 
   pm.Modify();
 }
