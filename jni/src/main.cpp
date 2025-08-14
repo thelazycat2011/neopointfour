@@ -310,7 +310,7 @@ void ApplyPatches() {
   pm.cpatch(0x140072, "00 BF 00 BF 00 BF 00 BF 00 BF 00 BF 00 BF 00 BF 00 BF 00 BF 00 BF");
   pm.cpatch(0x20376c, "01 20 70 47");
   // Main level
-  pm.cpatch(0x17b8c8, ML);
+  // pm.cpatch(0x17b8c8, ML);
 
   pm.Modify();
 }
