@@ -204,6 +204,10 @@ class LevelCell : public CCLayer {
   
 };
 
+class GameManager : public CCNode {
+  
+};
+
 // Credit to akqanile for the same code on 1.3 GDPS
 std::map<GJGameLevel*, int> feature_type_map;
 
@@ -249,6 +253,20 @@ void LevelCell_loadCustomLevelCell_H(LevelCell* self) {
   self->addChild(featureFrame);
 }
 
+bool (*LevelInfoLayer_init)(CCLayer* self, GJGameLevel* lvl);
+bool LevelInfoLayer_init_H(CCLayer* self, GJGameLevel* lvl) {
+  if (!LevelInfoLayer_init(self, lvl)) return false;
+  // GJGameLevel* lvl = from<GJGameLevel*>(self, 0x154);
+  auto win_size = CCDirector::sharedDirector()->getWinSize();
+  auto val = feature_type_map[lvl];
+  if (val == 0) return true;
+  CCSprite* featureFrame = CCSprite::create((val == 2) ? MAGIC_TEXTURE : FEATURED_TEXTURE);
+  featureFrame->setPosition({(win_size.width / 2) - 120, (win_size.height / 2) + 35});
+  featureFrame->_setZOrder(-1);
+  self->addChild(featureFrame);
+  return true;
+}
+
 // Subject to change, take this as a reference
 GJGameLevel* (*LevelTools_getLevel)(int id);
 GJGameLevel* LevelTools_getLevel_H(int id) {
@@ -274,17 +292,50 @@ GJGameLevel* LevelTools_getLevel_H(int id) {
   }
 }
 
-bool (*LevelInfoLayer_init)(CCLayer* self, GJGameLevel* lvl);
-bool LevelInfoLayer_init_H(CCLayer* self, GJGameLevel* lvl) {
-  if (!LevelInfoLayer_init(self, lvl)) return false;
-  // GJGameLevel* lvl = from<GJGameLevel*>(self, 0x154);
-  auto win_size = CCDirector::sharedDirector()->getWinSize();
-  auto val = feature_type_map[lvl];
-  if (val == 0) return true;
-  CCSprite* featureFrame = CCSprite::create((val == 2) ? MAGIC_TEXTURE : FEATURED_TEXTURE);
-  featureFrame->setPosition({(win_size.width / 2) - 120, (win_size.height / 2) + 35});
-  featureFrame->_setZOrder(-1);
-  self->addChild(featureFrame);
+bool iconHack = false;
+bool noclip = false;
+
+// Hack function
+bool (*GameManager_isColorUnlocked)(GameManager*, int, bool);
+bool GameManager_isColorUnlocked_H(GameManager* self, int id, bool idk) {
+  //if (!iconHack) return GameManager_isColorUnlocked(self, id, idk);
+  return true;
+}
+
+bool (*GameManager_isIconUnlocked)(GameManager*, int, int);
+bool GameManager_isIconUnlocked_H(GameManager* self, int id, int id2) {
+  //if (!iconHack) return GameManager_isIconUnlocked(self, id, id2);
+  return true;
+}
+
+// Hack toggle
+class ToggleHack {
+  public:
+    void toggleIconHack(CCObject*) { iconHack = !iconHack; };
+    void toggleNoclip(CCObject*) {noclip = !noclip;};
+};
+
+CCSprite* getToggleSprite(CCSprite* on, CCSprite* off, bool state) { return (state) ? on : off; }
+
+bool (*GJGarageLayer_init)(CCLayer*);
+bool GJGarageLayer_init_H(CCLayer* self) {
+  if (!GJGarageLayer_init(self)) return false;
+
+  auto toggleOff = CCSprite::createWithSpriteFrameName("GJ_checkOff_001.png");
+  auto toggleOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
+
+  auto button = CCMenuItemToggler::create(
+    getToggleSprite(toggleOn, toggleOff, iconHack),
+    getToggleSprite(toggleOff, toggleOn, iconHack),
+    self,
+    menu_selector(ToggleHack::toggleIconHack)
+  );
+
+  auto menu = CCMenu::create();
+  menu->addChild(button);
+  button->setPosition({150, 120});
+  self->addChild(menu);
+
   return true;
 }
 
@@ -303,6 +354,11 @@ void ApplyHooks() {
   HOOK("_ZN11GJGameLevel15encodeWithCoderEP13DS_Dictionary", GJGameLevel_encodeWithCoder_H, GJGameLevel_encodeWithCoder);
   HOOK("_ZN11GJGameLevel15createWithCoderEP13DS_Dictionary", GJGameLevel_createWithCoder_H, GJGameLevel_createWithCoder);
   HOOK("_ZN11GJGameLevelD1Ev", GJGameLevel_destructor_H, GJGameLevel_destructor);
+
+  // QoL utils
+  // HOOK("_ZN13GJGarageLayer4initEv", GJGarageLayer_init_H, GJGarageLayer_init);
+  // HOOK("_ZN11GameManager14isIconUnlockedEi8IconType", GameManager_isIconUnlocked_H, GameManager_isIconUnlocked);
+  // HOOK("_ZN11GameManager15isColorUnlockedEib", GameManager_isColorUnlocked_H, GameManager_isColorUnlocked);
 }
 
 //this is where your starting patches should be

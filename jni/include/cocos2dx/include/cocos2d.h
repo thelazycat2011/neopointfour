@@ -209,6 +209,7 @@ THE SOFTWARE.
 
 // robtop additions
 #include "robtop/CCBlockLayer.h"
+#include "robtop/CCMenuItemToggler.h"
 
 NS_CC_BEGIN
 
