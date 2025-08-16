@@ -208,6 +208,18 @@ class GameManager : public CCNode {
   
 };
 
+bool iconHack = false;
+bool noclip = false;
+
+// Hack toggle
+class ToggleHack {
+  public:
+    void toggleIconHack(CCObject*) { iconHack = !iconHack; }
+    void toggleNoclip(CCObject*) {noclip = !noclip;}
+};
+
+CCSprite* getToggleSprite(CCSprite* on, CCSprite* off, bool state) { return (state) ? on : off; }
+
 // Credit to akqanile for the same code on 1.3 GDPS
 std::map<GJGameLevel*, int> feature_type_map;
 
@@ -259,6 +271,19 @@ bool LevelInfoLayer_init_H(CCLayer* self, GJGameLevel* lvl) {
   // GJGameLevel* lvl = from<GJGameLevel*>(self, 0x154);
   auto win_size = CCDirector::sharedDirector()->getWinSize();
   auto val = feature_type_map[lvl];
+  auto toggleOff = CCSprite::createWithSpriteFrameName("GJ_checkOff_001.png");
+  auto toggleOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
+  auto button = CCMenuItemToggler::create(
+    getToggleSprite(toggleOn, toggleOff, noclip),
+    getToggleSprite(toggleOff, toggleOn, noclip),
+    self,
+    menu_selector(ToggleHack::toggleNoclip)
+  );
+  auto menu = CCMenu::create();
+  menu->addChild(button);
+  menu->setPosition({(win_size.width / 2) + 120, (win_size.height / 2) + 35});
+  button->setPosition({0, 0});
+  self->addChild(menu);
   if (val == 0) return true;
   CCSprite* featureFrame = CCSprite::create((val == 2) ? MAGIC_TEXTURE : FEATURED_TEXTURE);
   featureFrame->setPosition({(win_size.width / 2) - 120, (win_size.height / 2) + 35});
@@ -292,9 +317,6 @@ GJGameLevel* LevelTools_getLevel_H(int id) {
   }
 }
 
-bool iconHack = false;
-bool noclip = false;
-
 // Hack function
 bool (*GameManager_isColorUnlocked)(GameManager*, int, bool);
 bool GameManager_isColorUnlocked_H(GameManager* self, int id, bool idk) {
@@ -308,14 +330,17 @@ bool GameManager_isIconUnlocked_H(GameManager* self, int id, int id2) {
   return true;
 }
 
-// Hack toggle
-class ToggleHack {
-  public:
-    void toggleIconHack(CCObject*) { iconHack = !iconHack; };
-    void toggleNoclip(CCObject*) {noclip = !noclip;};
-};
+void (*PlayLayer_destroyPlayer)(CCLayer*);
+void PlayLayer_destroyPlayer_H(CCLayer* self) {
+  if (!noclip) PlayLayer_destroyPlayer(self);
+  return;
+}
 
-CCSprite* getToggleSprite(CCSprite* on, CCSprite* off, bool state) { return (state) ? on : off; }
+void (*PlayLayer_levelComplete)(CCLayer*);
+void PlayLayer_levelComplete_H(CCLayer* self) {
+  if (noclip) callFunctionFromSymbol<void (*)(CCLayer*)>("_ZN9PlayLayer6onQuitEv")(self);
+  else PlayLayer_levelComplete(self);
+}
 
 bool (*GJGarageLayer_init)(CCLayer*);
 bool GJGarageLayer_init_H(CCLayer* self) {
@@ -357,8 +382,10 @@ void ApplyHooks() {
 
   // QoL utils
   // HOOK("_ZN13GJGarageLayer4initEv", GJGarageLayer_init_H, GJGarageLayer_init);
-  // HOOK("_ZN11GameManager14isIconUnlockedEi8IconType", GameManager_isIconUnlocked_H, GameManager_isIconUnlocked);
-  // HOOK("_ZN11GameManager15isColorUnlockedEib", GameManager_isColorUnlocked_H, GameManager_isColorUnlocked);
+  HOOK("_ZN11GameManager14isIconUnlockedEi8IconType", GameManager_isIconUnlocked_H, GameManager_isIconUnlocked);
+  HOOK("_ZN11GameManager15isColorUnlockedEib", GameManager_isColorUnlocked_H, GameManager_isColorUnlocked);
+  HOOK("_ZN9PlayLayer13destroyPlayerEv", PlayLayer_destroyPlayer_H, PlayLayer_destroyPlayer);
+  HOOK("_ZN9PlayLayer13levelCompleteEv", PlayLayer_levelComplete_H, PlayLayer_levelComplete);
 }
 
 //this is where your starting patches should be
