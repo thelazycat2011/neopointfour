@@ -252,6 +252,21 @@ void GJGameLevel_destructor_H(GJGameLevel* self) {
   GJGameLevel_destructor(self);
 }
 
+int (*EditorPauseLayer_init)(CCLayer* self, CCLayer* editor);
+int EditorPauseLayer_init_H(CCLayer* self, CCLayer* editor) {
+  if (!EditorPauseLayer_init(self, editor)) return 0;
+  auto win_size = CCDirector::sharedDirector()->getWinSize();
+  int objectCount = from<int>(editor, 0x154);
+  auto objText = CCString::createWithFormat("%i/%i objects", objectCount, 16384)->getCString();
+  auto objLabel = CCLabelBMFont::create(objText, "goldFont.fnt");
+  objLabel->setAnchorPoint({0, 1});
+  objLabel->setPosition({10, win_size.height - 5});
+  objLabel->setScale(0.5f);
+  self->addChild(objLabel);
+
+  return 1;
+}
+
 void (*LevelCell_loadCustomLevelCell)(LevelCell*);
 void LevelCell_loadCustomLevelCell_H(LevelCell* self) {
   LevelCell_loadCustomLevelCell(self);
@@ -380,6 +395,9 @@ void ApplyHooks() {
   HOOK("_ZN11GJGameLevel15createWithCoderEP13DS_Dictionary", GJGameLevel_createWithCoder_H, GJGameLevel_createWithCoder);
   HOOK("_ZN11GJGameLevelD1Ev", GJGameLevel_destructor_H, GJGameLevel_destructor);
 
+  // Object Count
+  HOOK("_ZN16EditorPauseLayer4initEP16LevelEditorLayer", EditorPauseLayer_init_H, EditorPauseLayer_init)
+
   // QoL utils
   // HOOK("_ZN13GJGarageLayer4initEv", GJGarageLayer_init_H, GJGarageLayer_init);
   HOOK("_ZN11GameManager14isIconUnlockedEi8IconType", GameManager_isIconUnlocked_H, GameManager_isIconUnlocked);
@@ -428,4 +446,4 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
 {
 	loader();
 	return JNI_VERSION_1_6;
-}   
+}
